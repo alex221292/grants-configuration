@@ -1,0 +1,4 @@
+export const TYPE_CODES = {
+  INIT_GRANTS: 'INIT_GRANTS',
+  UPDATE_GRANT: 'UPDATE_GRANT'
+}

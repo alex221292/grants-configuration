@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Attribute {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"atr_id\"", nullable = false)
   private Long id;
 

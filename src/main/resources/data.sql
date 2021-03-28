@@ -1,6 +1,6 @@
 INSERT INTO [authorization].[operations] ([opr_id], [code], [enabled]) VALUES (1, N'LoginOperation', 1)
 
-INSERT INTO [authorization].[operations] ([opr_id], [code], [enabled]) VALUES (2, N'LoutOperation', 1)
+INSERT INTO [authorization].[operations] ([opr_id], [code], [enabled]) VALUES (2, N'LogoutOperation', 1)
 
 INSERT INTO [authorization].[operations] ([opr_id], [code], [enabled]) VALUES (3, N'OpenObsoleteDocumentOperation', 1)
 

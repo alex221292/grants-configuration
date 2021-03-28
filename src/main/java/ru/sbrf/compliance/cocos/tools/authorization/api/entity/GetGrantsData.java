@@ -7,9 +7,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class GrantDto {
+public class GetGrantsData {
 
-  private String operationCode;
-  private List<RankDto> ranks;
+  private List<GrantDto> grants;
+  private List<String> rankCodes;
 
 }

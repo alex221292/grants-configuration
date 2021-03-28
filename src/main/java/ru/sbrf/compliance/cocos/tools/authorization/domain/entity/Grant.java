@@ -13,7 +13,7 @@ import java.util.Set;
 public class Grant {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"grant_id\"", nullable = false)
   private Long id;
 

@@ -1,8 +1,23 @@
 import React, { Component } from "react";
 import ReactDOM from 'react-dom';
-import Main from './components/main/index'
+import {createStore, compose} from "redux";
+import reducer from "./reducers";
+import {Provider} from "react-redux";
+import Main from './components/main/index';
+
+const initialState = {
+};
+const store = createStore(
+  reducer,
+  initialState,
+  compose(
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
+);
 
 ReactDOM.render(
-    <Main />,
+    <Provider store={store}>
+      <Main/>
+    </Provider>,
     document.getElementById('react')
 );

@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Operation {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "\"opr_id\"", nullable = false)
   private Long id;
 
