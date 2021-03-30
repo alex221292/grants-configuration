@@ -45,3 +45,5 @@ src/main/jsx.manifest
 target/*
 *.map
 package-lock.json
+
+src/main/resources/data.sql
