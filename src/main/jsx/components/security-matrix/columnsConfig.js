@@ -6,11 +6,7 @@ export const columnsConfig = (ranks = []) => {
       columns: [
         {
           Header: 'Codes',
-          accessor: 'operationCode',
-          className: 'user',
-          style: {
-            fontWeight: 'bolder',
-          },
+          accessor: 'operationCode'
         },
       ],
     }

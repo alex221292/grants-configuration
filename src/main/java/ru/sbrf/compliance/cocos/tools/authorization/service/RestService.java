@@ -31,9 +31,9 @@ public class RestService {
     this.sqlScriptsGenerationService = sqlScriptsGenerationService;
   }
 
-  @PutMapping(value = "/data/update/all")
+  @PostMapping(value = "/data/sql/update")
   public @ResponseBody
-  Response updateAllData(@RequestBody ExecuteQueryRequest executeQueryRequest) {
+  Response updateDataBySql(@RequestBody ExecuteQueryRequest executeQueryRequest) {
     return updateSecurityMatrixFromQueryService.execute(executeQueryRequest);
   }
 
@@ -52,12 +52,6 @@ public class RestService {
   @GetMapping(value = "/data/sql/generate")
   public @ResponseBody
   GetScriptsResponse generateSql() {
-    return sqlScriptsGenerationService.execute();
-  }
-
-  @PostMapping(value = "/data/sql/update")
-  public @ResponseBody
-  Response updateSql() {
     return sqlScriptsGenerationService.execute();
   }
 

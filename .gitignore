@@ -49,3 +49,5 @@ package-lock.json
 src/main/resources/data.sql
 src/main/resources/static/bundle.css
 src/main/resources/static/bundle.js
+
+node_modules

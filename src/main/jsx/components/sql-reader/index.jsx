@@ -3,6 +3,8 @@ import {TYPE_CODES} from "../../const";
 import {connect} from "react-redux";
 import {getGeneratedSqlScripts} from "../../api";
 import Loader from "react-loader-spinner";
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 class SqlReader extends Component {
 
@@ -44,7 +46,9 @@ class SqlReader extends Component {
   render() {
     return (
       <div>
-        <button
+        <Button
+          variant="outlined"
+          color="primary"
           onClick={() => {
             this.setState(
               {
@@ -55,8 +59,10 @@ class SqlReader extends Component {
           }}
         >
           Toggle visibility
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
           onClick={() => {
             getGeneratedSqlScripts()
               .then(res => {
@@ -77,8 +83,10 @@ class SqlReader extends Component {
           }}
         >
           Generate SQL
-        </button>
-        {this.renderSqlScripts()}
+        </Button>
+        <Typography variant="body1" gutterBottom>
+          {this.renderSqlScripts()}
+        </Typography>
       </div>
     )
   }

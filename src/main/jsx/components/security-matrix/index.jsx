@@ -2,44 +2,10 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {readGrants, toggleGrant} from '../../api';
 import {columnsConfig} from "./columnsConfig";
-import styled from 'styled-components'
 import Loader from "react-loader-spinner";
 import {TYPE_CODES} from "../../const";
 import Table from "../table";
-
-const Styles = styled.div`
-  padding: 1rem;
-
-  .user {
-    background-color: blue;
-    color: white;
-  }
-
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 class SecurityMatrix extends Component {
 
@@ -57,15 +23,11 @@ class SecurityMatrix extends Component {
   renderTable(columns) {
     if (this.props.data) {
       return (
-        <Styles>
+        <div>
+          <CssBaseline/>
           <Table
             columns={columns}
             data={this.props.data}
-            getRowProps={row => ({
-              style: {
-                background: row.index % 2 === 0 ? 'rgba(0,0,0,.1)' : 'white',
-              },
-            })}
             getCellProps={cellInfo => ({
               style: {
                 backgroundColor: cellInfo.value === true ? 'green' : null
@@ -83,7 +45,7 @@ class SecurityMatrix extends Component {
               }
             })}
           />
-        </Styles>
+        </div>
       )
     } else {
       return (

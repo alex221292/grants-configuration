@@ -31,6 +31,26 @@ export function toggleGrant(operationCode, rankCode) {
   }).catch(e => console.log(e))
 }
 
+export function updateDataBySql(query) {
+  return fetch(
+    '/data/sql/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: query
+      })
+    }
+  ).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject('failed to toggle grant with status: ' + res.status);
+    }
+  }).catch(e => console.log(e))
+}
+
 export function getGeneratedSqlScripts() {
   return fetch(
     '/data/sql/generate'
