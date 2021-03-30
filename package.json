@@ -5,8 +5,6 @@
   "dependencies": {
     "classes": "0.3.0",
     "classnames": "2.2.5",
-    "history": "4.10.1",
-    "madge": "2.2.0",
     "postcss-plugin-px2rem": "0.7.0",
     "prop-types": "15.6.1",
     "react": "16.10.2",

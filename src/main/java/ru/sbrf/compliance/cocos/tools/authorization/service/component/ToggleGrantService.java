@@ -2,8 +2,9 @@ package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.sbrf.compliance.cocos.tools.authorization.api.GetGrantsResponse;
-import ru.sbrf.compliance.cocos.tools.authorization.api.ToggleGrantRequest;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.ToggleGrantRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GetGrantsData;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.GrantDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.OperationDAO;
@@ -57,10 +58,10 @@ public class ToggleGrantService {
         .collect(Collectors.toList()));
       data.setGrants(generator.generateGrantsFromRankCodes(data.getRankCodes()));
 
-      response.setStatus("OK");
+      response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      response.setStatus("ERROR");
+      response.setStatus(ResponseCode.INTERNAL_ERROR);
     }
     return response;
   }

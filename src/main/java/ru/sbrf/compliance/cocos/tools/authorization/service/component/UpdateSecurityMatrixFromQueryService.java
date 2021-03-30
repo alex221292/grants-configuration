@@ -3,8 +3,9 @@ package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.sbrf.compliance.cocos.tools.authorization.api.ExecuteQueryRequest;
-import ru.sbrf.compliance.cocos.tools.authorization.api.Response;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.Response;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.AttributeDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.GrantDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.OperationDAO;
@@ -34,10 +35,10 @@ public class UpdateSecurityMatrixFromQueryService {
 
       jdbcTemplate.execute(executeQueryRequest.getQuery());
 
-      response.setStatus("OK");
+      response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      response.setStatus("ERROR");
+      response.setStatus(ResponseCode.INTERNAL_ERROR);
     }
     return response;
   }

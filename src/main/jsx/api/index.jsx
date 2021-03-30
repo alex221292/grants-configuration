@@ -30,3 +30,15 @@ export function toggleGrant(operationCode, rankCode) {
     }
   }).catch(e => console.log(e))
 }
+
+export function getGeneratedSqlScripts() {
+  return fetch(
+    '/data/sql/generate'
+  ).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject('failed to get generated sql scripts with status: ' + res.status);
+    }
+  }).catch(e => console.log(e))
+}

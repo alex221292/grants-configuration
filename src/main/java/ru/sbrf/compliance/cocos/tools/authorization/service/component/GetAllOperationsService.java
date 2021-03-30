@@ -2,7 +2,8 @@ package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.sbrf.compliance.cocos.tools.authorization.api.GetGrantsResponse;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GetGrantsData;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.RankDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Rank;
@@ -27,10 +28,10 @@ public class GetAllOperationsService {
         .distinct()
         .collect(Collectors.toList()));
       data.setGrants(generator.generateGrantsFromRankCodes(data.getRankCodes()));
-      response.setStatus("OK");
+      response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      response.setStatus("ERROR");
+      response.setStatus(ResponseCode.INTERNAL_ERROR);
     }
     return response;
   }

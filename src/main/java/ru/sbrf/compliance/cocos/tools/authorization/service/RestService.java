@@ -1,24 +1,35 @@
 package ru.sbrf.compliance.cocos.tools.authorization.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.sbrf.compliance.cocos.tools.authorization.api.GetGrantsResponse;
-import ru.sbrf.compliance.cocos.tools.authorization.api.ExecuteQueryRequest;
-import ru.sbrf.compliance.cocos.tools.authorization.api.Response;
-import ru.sbrf.compliance.cocos.tools.authorization.api.ToggleGrantRequest;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.Response;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.ToggleGrantRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.GetAllOperationsService;
+import ru.sbrf.compliance.cocos.tools.authorization.service.component.SqlScriptsGenerationService;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.ToggleGrantService;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.UpdateSecurityMatrixFromQueryService;
 
 @RestController
 public class RestService {
 
-  @Autowired
-  private GetAllOperationsService getAllOperationsService;
-  @Autowired
-  private UpdateSecurityMatrixFromQueryService updateSecurityMatrixFromQueryService;
-  @Autowired
-  private ToggleGrantService toggleGrantService;
+  private final GetAllOperationsService getAllOperationsService;
+  private final UpdateSecurityMatrixFromQueryService updateSecurityMatrixFromQueryService;
+  private final ToggleGrantService toggleGrantService;
+  private final SqlScriptsGenerationService sqlScriptsGenerationService;
+
+  public RestService(
+    GetAllOperationsService getAllOperationsService,
+    UpdateSecurityMatrixFromQueryService updateSecurityMatrixFromQueryService,
+    ToggleGrantService toggleGrantService,
+    SqlScriptsGenerationService sqlScriptsGenerationService
+  ) {
+    this.getAllOperationsService = getAllOperationsService;
+    this.updateSecurityMatrixFromQueryService = updateSecurityMatrixFromQueryService;
+    this.toggleGrantService = toggleGrantService;
+    this.sqlScriptsGenerationService = sqlScriptsGenerationService;
+  }
 
   @PutMapping(value = "/data/update/all")
   public @ResponseBody
@@ -36,6 +47,18 @@ public class RestService {
   public @ResponseBody
   GetGrantsResponse readGrants() {
     return getAllOperationsService.execute();
+  }
+
+  @GetMapping(value = "/data/sql/generate")
+  public @ResponseBody
+  GetScriptsResponse generateSql() {
+    return sqlScriptsGenerationService.execute();
+  }
+
+  @PostMapping(value = "/data/sql/update")
+  public @ResponseBody
+  Response updateSql() {
+    return sqlScriptsGenerationService.execute();
   }
 
 }
