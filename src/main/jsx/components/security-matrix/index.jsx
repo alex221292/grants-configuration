@@ -21,13 +21,13 @@ class SecurityMatrix extends Component {
   }
 
   renderTable(columns) {
-    if (this.props.data) {
+    if (this.props.grants) {
       return (
         <div>
           <CssBaseline/>
           <Table
             columns={columns}
-            data={this.props.data}
+            data={this.props.grants}
             getCellProps={cellInfo => ({
               style: {
                 backgroundColor: cellInfo.value === true ? 'green' : null

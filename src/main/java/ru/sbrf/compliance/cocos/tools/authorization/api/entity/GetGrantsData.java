@@ -4,12 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class GetGrantsData {
 
-  private List<GrantDto> grants;
+  private List<Map<String, Object>> grants;
   private List<String> rankCodes;
 
 }

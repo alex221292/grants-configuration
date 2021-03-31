@@ -1,4 +1,3 @@
-import {dataExtractor} from "./dataExtractor";
 import {TYPE_CODES} from "./const";
 
 export default (state, action) => {
@@ -7,7 +6,7 @@ export default (state, action) => {
       if (action.data) {
         return {
           ...state,
-          data: dataExtractor(action.data.grants),
+          grants: action.data.grants,
           rankCodes: action.data.rankCodes
         }
       } else {

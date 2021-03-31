@@ -11,13 +11,13 @@ import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Grant;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Operation;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Rank;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class GrantsDataGenerator {
+
+  private static final String OPERATION_CODE_KEY = "operationCode";
 
   private final RankDAO rankDAO;
   private final GrantDAO grantDAO;
@@ -37,25 +37,19 @@ public class GrantsDataGenerator {
       .distinct()
       .collect(Collectors.toList()));
 
-    List<GrantDto> result = new LinkedList<>();
-    List<Operation> operations = operationDAO.findAll();
+    List<Map<String, Object>> result = new LinkedList<>();
+    data.setGrants(result);
+    List<Operation> operations = operationDAO.findAll().stream().sorted(Comparator.comparing(Operation::getCode)).collect(Collectors.toList());
     List<Grant> grants = grantDAO.findAll();
     operations.forEach(operation -> {
-      GrantDto grantDto = new GrantDto();
-      result.add(grantDto);
-      List<RankDto> ranks = new LinkedList<>();
-      grantDto.setRanks(ranks);
-      grantDto.setOperationCode(operation.getCode());
-      data.getRankCodes().forEach(rankCode -> {
-        RankDto rankDto = new RankDto();
-        ranks.add(rankDto);
-        rankDto.setRankCode(rankCode);
-        rankDto.setEnabled(
-          grants.stream().anyMatch(g -> g.getRank().getCode().equals(rankCode) && g.getOperation().getCode().equals(operation.getCode()))
-        );
-      });
+      Map<String, Object> grantsMap = new LinkedHashMap<>();
+      grantsMap.put(OPERATION_CODE_KEY, operation.getCode());
+      data.getRankCodes().forEach(rankCode -> grantsMap.put(
+        rankCode,
+        grants.stream().anyMatch(g -> g.getRank().getCode().equals(rankCode) && g.getOperation().getCode().equals(operation.getCode()))
+      ));
+      result.add(grantsMap);
     });
-    data.setGrants(result.stream().sorted(Comparator.comparing(GrantDto::getOperationCode)).collect(Collectors.toList()));
 
     return data;
   }
