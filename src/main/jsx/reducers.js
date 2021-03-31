@@ -17,6 +17,11 @@ export default (state, action) => {
         ...state,
         scripts: action.scripts
       }
+    case TYPE_CODES.MARK_QUERY_EXECUTED:
+      return {
+        ...state,
+      isQueryExecutedOnce: state.isQueryExecutedOnce === true ? state.isQueryExecutedOnce : true
+      }
     default:
       return state;
   }

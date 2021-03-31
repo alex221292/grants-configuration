@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {getGeneratedSqlScripts} from "../../api";
 import Loader from "react-loader-spinner";
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import styles from './styles.less';
 
 class SqlReader extends Component {
 
@@ -27,9 +27,15 @@ class SqlReader extends Component {
   renderSqlScripts() {
     if (this.state.scriptsIsLoading === false) {
       if (this.props.scripts && this.state.hideScripts === false) {
-        return this.props.scripts.map(script => {
-          return this.renderScript(script)
-        })
+        return (
+          <div className={styles.text}>
+            {
+              this.props.scripts.map(script => {
+                return this.renderScript(script)
+              })
+            }
+          </div>
+        )
       }
     } else {
       return (
@@ -84,9 +90,7 @@ class SqlReader extends Component {
         >
           Generate SQL
         </Button>
-        <Typography variant="body1" gutterBottom>
-          {this.renderSqlScripts()}
-        </Typography>
+        {this.renderSqlScripts()}
       </div>
     )
   }
