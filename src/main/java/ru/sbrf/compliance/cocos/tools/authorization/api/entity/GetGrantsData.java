@@ -12,5 +12,4 @@ public class GetGrantsData {
 
   private List<Map<String, Object>> grants;
   private List<String> rankCodes;
-
 }

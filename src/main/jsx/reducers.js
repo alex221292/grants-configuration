@@ -7,7 +7,8 @@ export default (state, action) => {
         return {
           ...state,
           grants: action.data.grants,
-          rankCodes: action.data.rankCodes
+          rankCodes: action.data.rankCodes,
+          hashCode: action.data.hashCode
         }
       } else {
         return state;
@@ -16,11 +17,6 @@ export default (state, action) => {
       return {
         ...state,
         scripts: action.scripts
-      }
-    case TYPE_CODES.MARK_QUERY_EXECUTED:
-      return {
-        ...state,
-      isQueryExecutedOnce: state.isQueryExecutedOnce === true ? state.isQueryExecutedOnce : true
       }
     default:
       return state;

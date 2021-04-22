@@ -4,22 +4,27 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
-import ru.sbrf.compliance.cocos.tools.authorization.api.response.Response;
+import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
 
 @Component
 public class UpdateSecurityMatrixFromQueryService {
 
   private final JdbcTemplate jdbcTemplate;
+  private final GrantsDataGenerator generator;
 
-  public UpdateSecurityMatrixFromQueryService(JdbcTemplate jdbcTemplate) {
+  public UpdateSecurityMatrixFromQueryService(
+    JdbcTemplate jdbcTemplate,
+    GrantsDataGenerator generator
+  ) {
     this.jdbcTemplate = jdbcTemplate;
+    this.generator = generator;
   }
 
-  public Response execute(ExecuteQueryRequest executeQueryRequest) {
-    Response response = new Response();
+  public GetGrantsResponse execute(ExecuteQueryRequest executeQueryRequest) {
+    GetGrantsResponse response = new GetGrantsResponse();
     try {
       jdbcTemplate.execute(executeQueryRequest.getQuery());
-
+      response.setData(generator.generate());
       response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());

@@ -4,14 +4,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
-import ru.sbrf.compliance.cocos.tools.authorization.api.response.Response;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ToggleGrantRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.GetAllOperationsService;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.SqlScriptsGenerationService;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.ToggleGrantService;
 import ru.sbrf.compliance.cocos.tools.authorization.service.component.UpdateSecurityMatrixFromQueryService;
 
-@RestController
+@RestController("/cib-grants")
 public class RestService {
 
   private final GetAllOperationsService getAllOperationsService;
@@ -33,13 +32,13 @@ public class RestService {
 
   @PostMapping(value = "/data/sql/update")
   public @ResponseBody
-  Response updateDataBySql(@RequestBody ExecuteQueryRequest executeQueryRequest) {
+  GetGrantsResponse updateDataBySql(@RequestBody ExecuteQueryRequest executeQueryRequest) {
     return updateSecurityMatrixFromQueryService.execute(executeQueryRequest);
   }
 
   @PatchMapping(value = "/data/grant/toggle")
   public @ResponseBody
-  Response toggleGrant(@RequestBody ToggleGrantRequest toggleGrantRequest) {
+  GetGrantsResponse toggleGrant(@RequestBody ToggleGrantRequest toggleGrantRequest) {
     return toggleGrantService.execute(toggleGrantRequest);
   }
 

@@ -41,7 +41,7 @@ class SqlWriter extends Component {
               .then(res => {
                 alert(res.status);
                 if (res.status === 'SUCCESS') {
-                  this.props.markQueryExecuted();
+                  this.props.loadGrants(res);
                 }
               })
           }}
@@ -61,7 +61,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    markQueryExecuted: () => dispatch({type: TYPE_CODES.MARK_QUERY_EXECUTED}),
+    loadGrants: (res) => dispatch({type: TYPE_CODES.LOAD_GRANTS, data: res.data})
   };
 };
 

@@ -45,7 +45,7 @@ export default function Table({
         {rows.map((row, i) => {
           prepareRow(row)
           return (
-            <TableRow {...row.getRowProps(getRowProps(row))}>
+            <TableRow hover {...row.getRowProps(getRowProps(row))}>
               {row.cells.map(cell => {
                 return (
                   <TableCell {...cell.getCellProps(

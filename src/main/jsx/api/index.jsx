@@ -1,6 +1,6 @@
 export function readGrants() {
   return fetch(
-    '/data/grants/read'
+    '/cib-grants/data/grants/read'
   ).then(res => {
     if (res.ok) {
       return res.json();
@@ -12,7 +12,7 @@ export function readGrants() {
 
 export function toggleGrant(operationCode, rankCode) {
   return fetch(
-    '/data/grant/toggle', {
+    '/cib-grants/data/grant/toggle', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -33,7 +33,7 @@ export function toggleGrant(operationCode, rankCode) {
 
 export function updateDataBySql(query) {
   return fetch(
-    '/data/sql/update', {
+    '/cib-grants/data/sql/update', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ export function updateDataBySql(query) {
 
 export function getGeneratedSqlScripts() {
   return fetch(
-    '/data/sql/generate'
+    '/cib-grants/data/sql/generate'
   ).then(res => {
     if (res.ok) {
       return res.json();

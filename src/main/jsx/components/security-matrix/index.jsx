@@ -17,12 +17,6 @@ class SecurityMatrix extends Component {
     this.fetchGrants();
   }
 
-  componentDidUpdate(prevState) {
-    if (prevState.isQueryExecutedOnce !== this.props.isQueryExecutedOnce) {
-      this.fetchGrants();
-    }
-  }
-
   fetchGrants() {
     readGrants()
       .then(res => {
@@ -41,7 +35,8 @@ class SecurityMatrix extends Component {
               data={this.props.grants}
               getCellProps={cellInfo => ({
                 style: {
-                  backgroundColor: cellInfo.value === true ? 'green' : null
+                  background: cellInfo.value === true ? 'linear-gradient(135deg, #009b0a, #eae215, white)' : null,
+                  borderRadius: '0 30px 30px 0'
                 },
                 onClick: () => {
                   if (cellInfo.column.Header !== 'Codes') {
@@ -90,12 +85,12 @@ const mapStateToProps = (state) => {
   return {
     grants: state.grants,
     rankCodes: state.rankCodes,
-    isQueryExecutedOnce: state.isQueryExecutedOnce
+    hashCode: state.hashCode
   }
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadGrants: (res) => dispatch({type: TYPE_CODES.LOAD_GRANTS, data: res.data}),
+    loadGrants: (res) => dispatch({type: TYPE_CODES.LOAD_GRANTS, data: res.data})
   };
 };
 
