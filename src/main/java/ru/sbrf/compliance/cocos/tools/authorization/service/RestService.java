@@ -6,10 +6,7 @@ import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsRespon
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ToggleGrantRequest;
-import ru.sbrf.compliance.cocos.tools.authorization.service.component.GetAllOperationsService;
-import ru.sbrf.compliance.cocos.tools.authorization.service.component.SqlScriptsGenerationService;
-import ru.sbrf.compliance.cocos.tools.authorization.service.component.ToggleGrantService;
-import ru.sbrf.compliance.cocos.tools.authorization.service.component.UpdateSecurityMatrixFromQueryService;
+import ru.sbrf.compliance.cocos.tools.authorization.service.component.*;
 
 @RestController("/cib-grants")
 public class RestService {
@@ -18,34 +15,40 @@ public class RestService {
   private final UpdateSecurityMatrixFromQueryService updateSecurityMatrixFromQueryService;
   private final ToggleGrantService toggleGrantService;
   private final SqlScriptsGenerationService sqlScriptsGenerationService;
+  private final SessionService sessionService;
 
   public RestService(
     GetAllOperationsService getAllOperationsService,
     UpdateSecurityMatrixFromQueryService updateSecurityMatrixFromQueryService,
     ToggleGrantService toggleGrantService,
-    SqlScriptsGenerationService sqlScriptsGenerationService
+    SqlScriptsGenerationService sqlScriptsGenerationService,
+    SessionService sessionService
   ) {
     this.getAllOperationsService = getAllOperationsService;
     this.updateSecurityMatrixFromQueryService = updateSecurityMatrixFromQueryService;
     this.toggleGrantService = toggleGrantService;
     this.sqlScriptsGenerationService = sqlScriptsGenerationService;
+    this.sessionService = sessionService;
   }
 
   @PostMapping(value = "/data/sql/update")
   public @ResponseBody
-  GetGrantsResponse updateDataBySql(@RequestBody ExecuteQueryRequest executeQueryRequest) {
-    return updateSecurityMatrixFromQueryService.execute(executeQueryRequest);
+  GetGrantsResponse updateDataBySql(@RequestBody ExecuteQueryRequest request) {
+    sessionService.processBySessionKey(request.getSessionKey());
+    return updateSecurityMatrixFromQueryService.execute(request);
   }
 
   @PatchMapping(value = "/data/grant/toggle")
   public @ResponseBody
-  GetGrantsResponse toggleGrant(@RequestBody ToggleGrantRequest toggleGrantRequest) {
-    return toggleGrantService.execute(toggleGrantRequest);
+  GetGrantsResponse toggleGrant(@RequestBody ToggleGrantRequest request) {
+    sessionService.processBySessionKey(request.getSessionKey());
+    return toggleGrantService.execute(request);
   }
 
   @PostMapping(value = "/data/grants/read")
   public @ResponseBody
   GetGrantsResponse readGrants(@RequestBody Request request) {
+    sessionService.processBySessionKey(request.getSessionKey());
     return getAllOperationsService.execute();
   }
 
