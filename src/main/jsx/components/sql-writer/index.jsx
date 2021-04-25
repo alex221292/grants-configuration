@@ -37,7 +37,7 @@ class SqlWriter extends Component {
           color="primary"
           startIcon={<CloudUploadIcon />}
           onClick={() => {
-            updateDataBySql(this.state.query)
+            updateDataBySql(this.state.query, this.props.sessionKey)
               .then(res => {
                 alert(res.status);
                 if (res.status === 'SUCCESS') {
@@ -56,7 +56,8 @@ class SqlWriter extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    scripts: state.scripts
+    scripts: state.scripts,
+    sessionKey: state.sessionKey
   }
 };
 const mapDispatchToProps = (dispatch) => {

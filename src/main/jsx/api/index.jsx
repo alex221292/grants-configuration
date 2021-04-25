@@ -1,6 +1,14 @@
-export function readGrants() {
+export function readGrants(sessionKey) {
   return fetch(
-    '/cib-grants/data/grants/read'
+    '/cib-grants/data/grants/read', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        sessionKey: sessionKey
+      })
+    }
   ).then(res => {
     if (res.ok) {
       return res.json();
@@ -10,7 +18,7 @@ export function readGrants() {
   }).catch(e => console.log(e))
 }
 
-export function toggleGrant(operationCode, rankCode) {
+export function toggleGrant(operationCode, rankCode, sessionKey) {
   return fetch(
     '/cib-grants/data/grant/toggle', {
       method: 'PATCH',
@@ -19,7 +27,8 @@ export function toggleGrant(operationCode, rankCode) {
       },
       body: JSON.stringify({
         operationCode: operationCode,
-        rankCode: rankCode
+        rankCode: rankCode,
+        sessionKey: sessionKey
       })
     }
   ).then(res => {
@@ -31,7 +40,7 @@ export function toggleGrant(operationCode, rankCode) {
   }).catch(e => console.log(e))
 }
 
-export function updateDataBySql(query) {
+export function updateDataBySql(query, sessionKey) {
   return fetch(
     '/cib-grants/data/sql/update', {
       method: 'POST',
@@ -39,7 +48,8 @@ export function updateDataBySql(query) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query: query
+        query: query,
+        sessionKey: sessionKey
       })
     }
   ).then(res => {

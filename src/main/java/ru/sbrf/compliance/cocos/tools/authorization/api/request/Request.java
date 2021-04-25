@@ -5,9 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ToggleGrantRequest extends Request {
+public class Request {
 
-  private String operationCode;
-  private String rankCode;
+  private String sessionKey;
 
 }

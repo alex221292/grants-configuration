@@ -18,7 +18,7 @@ class SecurityMatrix extends Component {
   }
 
   fetchGrants() {
-    readGrants()
+    readGrants(this.props.sessionKey)
       .then(res => {
         this.props.loadGrants(res);
       });
@@ -42,7 +42,8 @@ class SecurityMatrix extends Component {
                   if (cellInfo.column.Header !== 'Codes') {
                     toggleGrant(
                       cellInfo.row.values.operationCode,
-                      cellInfo.column.Header
+                      cellInfo.column.Header,
+                      this.props.sessionKey
                     )
                       .then(res => {
                         this.props.loadGrants(res);
@@ -85,7 +86,8 @@ const mapStateToProps = (state) => {
   return {
     grants: state.grants,
     rankCodes: state.rankCodes,
-    hashCode: state.hashCode
+    hashCode: state.hashCode,
+    sessionKey: state.sessionKey
   }
 };
 const mapDispatchToProps = (dispatch) => {

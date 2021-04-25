@@ -1,6 +1,7 @@
 package ru.sbrf.compliance.cocos.tools.authorization.service;
 
 import org.springframework.web.bind.annotation.*;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.Request;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
@@ -42,9 +43,9 @@ public class RestService {
     return toggleGrantService.execute(toggleGrantRequest);
   }
 
-  @GetMapping(value = "/data/grants/read")
+  @PostMapping(value = "/data/grants/read")
   public @ResponseBody
-  GetGrantsResponse readGrants() {
+  GetGrantsResponse readGrants(@RequestBody Request request) {
     return getAllOperationsService.execute();
   }
 
