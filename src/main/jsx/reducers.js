@@ -7,16 +7,10 @@ export default (state, action) => {
         return {
           ...state,
           grants: action.data.grants,
-          rankCodes: action.data.rankCodes,
-          hashCode: action.data.hashCode
+          rankCodes: action.data.rankCodes
         }
       } else {
         return state;
-      }
-    case TYPE_CODES.LOAD_SQL_SCRIPTS:
-      return {
-        ...state,
-        scripts: action.scripts
       }
     default:
       return state;
