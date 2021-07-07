@@ -56,8 +56,7 @@ class SqlWriter extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    scripts: state.scripts,
-    sessionKey: state.sessionKey
+    scripts: state.scripts
   }
 };
 const mapDispatchToProps = (dispatch) => {

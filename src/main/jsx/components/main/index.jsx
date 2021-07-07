@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import SqlWriter from "../sql-writer";
+import Table from "../table";
 
 class Main extends Component {
 
@@ -13,6 +14,7 @@ class Main extends Component {
       <div>
         <h1>CIB Security Matrix</h1>
         <SqlWriter/>
+        <Table/>
       </div>
     );
   }
