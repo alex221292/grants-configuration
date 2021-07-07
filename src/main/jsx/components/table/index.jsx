@@ -38,7 +38,8 @@ class Table extends Component {
                   {
                     rankCodes.map(rank => {
                       return (
-                        <Cell isActive={grants[operationCode][rank]} operationCode={operationCode} rankCode={rank}/>
+                        <Cell isActive={grants[operationCode][rank]}
+                              onClick={() => this.props.toggleGrant(operationCode, rank)}/>
                       )
                     })
                   }
@@ -68,4 +69,10 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(Table);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleGrant: (operationCode, rankCode) => dispatch({type: TYPE_CODES.TOGGLE_GRANT, operationCode: operationCode, rankCode: rankCode})
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Table);
