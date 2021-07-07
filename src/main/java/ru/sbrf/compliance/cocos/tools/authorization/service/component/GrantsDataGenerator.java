@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 @Component
 public class GrantsDataGenerator {
 
-  private static final String OPERATION_CODE_KEY = "operationCode";
-
   private final RankDAO rankDAO;
   private final GrantDAO grantDAO;
   private final OperationDAO operationDAO;
@@ -37,18 +35,23 @@ public class GrantsDataGenerator {
         .distinct()
         .collect(Collectors.toList()));
 
-      List<Map<String, Object>> result = new LinkedList<>();
+      Map<String, Map<String, Object>> result = new HashMap<>();
       data.setGrants(result);
       List<Operation> operations = operationDAO.findAll().stream().sorted(Comparator.comparing(Operation::getCode)).collect(Collectors.toList());
+      data.setOperationCodes(operations.stream()
+        .map(Operation::getCode)
+        .sorted()
+        .distinct()
+        .collect(Collectors.toList()));
+
       List<Grant> grants = grantDAO.findAll();
       operations.forEach(operation -> {
         Map<String, Object> grantsMap = new LinkedHashMap<>();
-        grantsMap.put(OPERATION_CODE_KEY, operation.getCode());
         data.getRankCodes().forEach(rankCode -> grantsMap.put(
           rankCode,
           grants.stream().anyMatch(g -> g.getRank().getCode().equals(rankCode) && g.getOperation().getCode().equals(operation.getCode()))
         ));
-        result.add(grantsMap);
+        result.put(operation.getCode(), grantsMap);
       });
 
       return data;

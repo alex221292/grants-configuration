@@ -1,5 +1,9 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import styles from './styles.less';
+import cn from "classnames";
+import Cell from "./components/cell";
+import {TYPE_CODES} from "../../const";
 
 class Table extends Component {
 
@@ -9,14 +13,15 @@ class Table extends Component {
   }
 
   render() {
-    if (this.props.rankCodes) {
+    const {rankCodes, grants, operationCodes} = this.props;
+    if (rankCodes) {
       return (
         <table>
           <thead>
           <tr>
             <th/>
             {
-              this.props.rankCodes.map(rank => {
+              rankCodes.map(rank => {
                 return (
                   <th>{rank}</th>
                 )
@@ -26,16 +31,14 @@ class Table extends Component {
           </thead>
           <tbody>
           {
-            this.props.grants.map(grant => {
+            operationCodes.map((operationCode) => {
               return (
                 <tr>
-                  <td>{grant.operationCode}</td>
+                  <td>{operationCode}</td>
                   {
-                    this.props.rankCodes.map(rank => {
+                    rankCodes.map(rank => {
                       return (
-                        <td>
-                          {grant[rank] === true ? 1 : 0}
-                        </td>
+                        <Cell isActive={grants[operationCode][rank]} operationCode={operationCode} rankCode={rank}/>
                       )
                     })
                   }
@@ -60,7 +63,8 @@ class Table extends Component {
 const mapStateToProps = (state) => {
   return {
     grants: state.grants,
-    rankCodes: state.rankCodes
+    rankCodes: state.rankCodes,
+    operationCodes: state.operationCodes
   }
 };
 

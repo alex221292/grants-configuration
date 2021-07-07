@@ -10,6 +10,7 @@ import java.util.Map;
 @Setter
 public class GetGrantsData {
 
-  private List<Map<String, Object>> grants;
+  private Map<String, Map<String, Object>> grants;
   private List<String> rankCodes;
+  private List<String> operationCodes;
 }
