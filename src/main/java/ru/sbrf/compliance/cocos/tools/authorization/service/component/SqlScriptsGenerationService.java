@@ -1,18 +1,23 @@
 package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import ru.sbrf.compliance.cocos.tools.authorization.RollbackException;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GenerateQueriesData;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.GenerateQueriesRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.GrantDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.OperationDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.RankDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Grant;
+import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.GrantKey;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Operation;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Rank;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,22 +40,81 @@ public class SqlScriptsGenerationService {
   private final OperationDAO operationDAO;
   private final GrantDAO grantDAO;
 
-  public SqlScriptsGenerationService(RankDAO rankDAO, OperationDAO operationDAO, GrantDAO grantDAO) {
+  private final PlatformTransactionManager transactionManager;
+
+  public SqlScriptsGenerationService(RankDAO rankDAO, OperationDAO operationDAO, GrantDAO grantDAO, PlatformTransactionManager transactionManager) {
     this.rankDAO = rankDAO;
     this.operationDAO = operationDAO;
     this.grantDAO = grantDAO;
+    this.transactionManager = transactionManager;
   }
 
-  public GetScriptsResponse execute() {
+  public GetScriptsResponse execute(GenerateQueriesRequest request) {
     GetScriptsResponse response = new GetScriptsResponse();
+
+    DefaultTransactionDefinition paramTransactionDefinition = new DefaultTransactionDefinition();
+    TransactionStatus status = transactionManager.getTransaction(paramTransactionDefinition);
     try {
+      fillDatabase(request.getData());
       response.setScripts(generateQueries());
+
+      transactionManager.rollback(status);
+      throw new RollbackException();
+    } catch (RollbackException e) {
       response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       response.setStatus(ResponseCode.INTERNAL_ERROR);
     }
     return response;
+  }
+
+  private void fillDatabase(GenerateQueriesData data) {
+    Map<String, Rank> rankMap = new HashMap<>();
+    Map<String, Operation> operationMap = new HashMap<>();
+    fillOperations(operationMap, data.getOperationCodes());
+    fillRanks(rankMap, data.getRankCodes());
+
+    Map<String, Map<String, Boolean>> grantsFromRequest = data.getGrants();
+    grantsFromRequest.forEach((operationCode, grants) -> {
+      grants.forEach((rankCode, status) -> {
+        List<Grant> existingGrants = grantDAO.findAllByOperationCodeAndRankCode(operationCode, rankCode);
+        boolean isGrantAlreadyExists = existingGrants != null && !existingGrants.isEmpty();
+        Grant grant;
+        if (status) {
+          if (!isGrantAlreadyExists) {
+            grant = new Grant();
+            GrantKey grantKey = new GrantKey();
+            grantKey.setRankId(rankMap.get(rankCode).getId());
+            grantKey.setOperationId(operationMap.get(operationCode).getId());
+            grant.setGrantKey(grantKey);
+            grantDAO.save(grant);
+          }
+        } else {
+          if (isGrantAlreadyExists) {
+            grant = existingGrants.get(0);
+            grantDAO.delete(grant);
+          }
+        }
+      });
+    });
+  }
+
+  private void fillOperations(Map<String, Operation> operationMap, List<String> operationCodes) {
+    operationCodes.forEach(operationCode -> {
+      Operation operation = new Operation();
+      operation.setCode(operationCode);
+      operation.setEnabled(true);
+      operationMap.put(operationCode, operationDAO.save(operation));
+    });
+  }
+
+  private void fillRanks(Map<String, Rank> rankMap, List<String> rankCodes) {
+    rankCodes.forEach(rankCode -> {
+      Rank rank = new Rank();
+      rank.setCode(rankCode);
+      rankMap.put(rankCode, rankDAO.save(rank));
+    });
   }
 
   private List<String> generateQueries() {
@@ -101,7 +165,10 @@ public class SqlScriptsGenerationService {
 
   private void appendInsertGrantsScripts(List<String> scripts) {
     scripts.add("/* 4. Grants insert part */");
-    List<Grant> grants = grantDAO.findAll()
+    List<Grant> grants1 = grantDAO.findAll();
+    boolean hasEmptyRank = grants1.stream().anyMatch(g -> g.getRank() == null);
+    boolean hasEmptyOperation = grants1.stream().anyMatch(g -> g.getOperation() == null);
+    List<Grant> grants = grants1
       .stream()
       .sorted(
         Comparator

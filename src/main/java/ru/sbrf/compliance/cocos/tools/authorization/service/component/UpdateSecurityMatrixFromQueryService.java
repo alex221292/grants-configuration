@@ -29,11 +29,13 @@ public class UpdateSecurityMatrixFromQueryService {
 
   public GetGrantsResponse execute(ExecuteQueryRequest executeQueryRequest) {
     GetGrantsResponse response = new GetGrantsResponse();
+
     DefaultTransactionDefinition paramTransactionDefinition = new DefaultTransactionDefinition();
     TransactionStatus status = transactionManager.getTransaction(paramTransactionDefinition);
     try {
       jdbcTemplate.execute(executeQueryRequest.getQuery());
       response.setData(generator.generate());
+
       transactionManager.rollback(status);
       throw new RollbackException();
     } catch (RollbackException e) {
