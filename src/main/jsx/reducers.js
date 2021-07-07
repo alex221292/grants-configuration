@@ -1,4 +1,5 @@
 import {TYPE_CODES} from "./const";
+import _ from "lodash"
 
 export default (state, action) => {
   switch (action.type) {
@@ -14,7 +15,7 @@ export default (state, action) => {
         return state;
       }
     case TYPE_CODES.TOGGLE_GRANT:
-      let updatedGrants = state.grants;
+      let updatedGrants = _.cloneDeep(state.grants);
       updatedGrants[action.operationCode][action.rankCode] = !updatedGrants[action.operationCode][action.rankCode]
       return {
         ...state,
