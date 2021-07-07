@@ -21,6 +21,11 @@ export default (state, action) => {
         ...state,
         grants: updatedGrants
       }
+    case TYPE_CODES.LOAD_SQL_SCRIPTS:
+      return {
+        ...state,
+        scripts: action.scripts
+      }
     default:
       return state;
   }

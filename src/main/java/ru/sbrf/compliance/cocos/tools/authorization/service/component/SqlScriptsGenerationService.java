@@ -77,17 +77,21 @@ public class SqlScriptsGenerationService {
 
     Map<String, Map<String, Boolean>> grantsFromRequest = data.getGrants();
     grantsFromRequest.forEach((operationCode, grants) -> {
+      Operation existingOperation = operationMap.get(operationCode);
       grants.forEach((rankCode, status) -> {
         List<Grant> existingGrants = grantDAO.findAllByOperationCodeAndRankCode(operationCode, rankCode);
         boolean isGrantAlreadyExists = existingGrants != null && !existingGrants.isEmpty();
+        Rank existingRank = rankMap.get(rankCode);
         Grant grant;
         if (status) {
           if (!isGrantAlreadyExists) {
             grant = new Grant();
             GrantKey grantKey = new GrantKey();
-            grantKey.setRankId(rankMap.get(rankCode).getId());
-            grantKey.setOperationId(operationMap.get(operationCode).getId());
+            grantKey.setRankId(existingRank.getId());
+            grantKey.setOperationId(existingOperation.getId());
             grant.setGrantKey(grantKey);
+            grant.setOperation(existingOperation);
+            grant.setRank(existingRank);
             grantDAO.save(grant);
           }
         } else {
