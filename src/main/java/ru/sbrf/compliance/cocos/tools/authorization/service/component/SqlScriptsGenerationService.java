@@ -6,6 +6,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import ru.sbrf.compliance.cocos.tools.authorization.RollbackException;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GenerateQueriesData;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.OperationDto;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.GenerateQueriesRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
@@ -72,10 +73,11 @@ public class SqlScriptsGenerationService {
   private void fillDatabase(GenerateQueriesData data) {
     Map<String, Rank> rankMap = new HashMap<>();
     Map<String, Operation> operationMap = new HashMap<>();
-    fillOperations(operationMap, data.getOperationCodes());
+    fillOperations(operationMap, data.getOperations());
     fillRanks(rankMap, data.getRankCodes());
 
     Map<String, Map<String, Boolean>> grantsFromRequest = data.getGrants();
+    List<Grant> grantsToSave = new ArrayList<>();
     grantsFromRequest.forEach((operationCode, grants) -> {
       Operation existingOperation = operationMap.get(operationCode);
       grants.forEach((rankCode, status) -> {
@@ -92,7 +94,7 @@ public class SqlScriptsGenerationService {
             grant.setGrantKey(grantKey);
             grant.setOperation(existingOperation);
             grant.setRank(existingRank);
-            grantDAO.save(grant);
+            grantsToSave.add(grant);
           }
         } else {
           if (isGrantAlreadyExists) {
@@ -102,14 +104,16 @@ public class SqlScriptsGenerationService {
         }
       });
     });
+
+    grantDAO.saveAll(grantsToSave);
   }
 
-  private void fillOperations(Map<String, Operation> operationMap, List<String> operationCodes) {
-    operationCodes.forEach(operationCode -> {
+  private void fillOperations(Map<String, Operation> operationMap, List<OperationDto> operations) {
+    operations.forEach(operationDto -> {
       Operation operation = new Operation();
-      operation.setCode(operationCode);
-      operation.setEnabled(true);
-      operationMap.put(operationCode, operationDAO.save(operation));
+      operation.setCode(operationDto.getOperationCode());
+      operation.setEnabled(operationDto.isEnabled());
+      operationMap.put(operationDto.getOperationCode(), operationDAO.save(operation));
     });
   }
 
@@ -169,10 +173,7 @@ public class SqlScriptsGenerationService {
 
   private void appendInsertGrantsScripts(List<String> scripts) {
     scripts.add("/* 4. Grants insert part */");
-    List<Grant> grants1 = grantDAO.findAll();
-    boolean hasEmptyRank = grants1.stream().anyMatch(g -> g.getRank() == null);
-    boolean hasEmptyOperation = grants1.stream().anyMatch(g -> g.getOperation() == null);
-    List<Grant> grants = grants1
+    List<Grant> grants = grantDAO.findAll()
       .stream()
       .sorted(
         Comparator

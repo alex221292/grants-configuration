@@ -2,8 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import styles from './styles.less';
 import cn from "classnames";
-import Cell from "./components/cell";
-import {TYPE_CODES} from "../../const";
+import Row from "./components/row"
 
 class Table extends Component {
 
@@ -13,17 +12,17 @@ class Table extends Component {
   }
 
   render() {
-    const {rankCodes, operationCodes} = this.props;
+    const {rankCodes, operations} = this.props;
     if (rankCodes) {
       return (
-        <table>
+        <table className={styles.table}>
           <thead>
           <tr>
             <th/>
             {
               rankCodes.map(rank => {
                 return (
-                  <th>{rank}</th>
+                  <th className={styles.header}>{rank}</th>
                 )
               })
             }
@@ -31,20 +30,9 @@ class Table extends Component {
           </thead>
           <tbody>
           {
-            operationCodes.map((operationCode) => {
+            operations.map((operation) => {
               return (
-                <tr>
-                  <td>{operationCode}</td>
-                  {
-                    rankCodes.map(rankCode => {
-                      return (
-                        <Cell operationCode={operationCode}
-                              rankCode={rankCode}
-                        />
-                      )
-                    })
-                  }
-                </tr>
+                <Row operation={operation}/>
               )
             })
           }
@@ -65,7 +53,7 @@ class Table extends Component {
 const mapStateToProps = (state) => {
   return {
     rankCodes: state.rankCodes,
-    operationCodes: state.operationCodes
+    operations: state.operations
   }
 };
 

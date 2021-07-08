@@ -11,7 +11,7 @@ import java.util.Map;
 public class GenerateQueriesData {
 
   private Map<String, Map<String, Boolean>> grants;
-  private List<String> operationCodes;
+  private List<OperationDto> operations;
   private List<String> rankCodes;
 
 }

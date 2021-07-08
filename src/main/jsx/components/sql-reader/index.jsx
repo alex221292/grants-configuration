@@ -73,7 +73,7 @@ class SqlReader extends Component {
             getGeneratedSqlScripts(
               this.props.grants,
               this.props.rankCodes,
-              this.props.operationCodes
+              this.props.operations
             )
               .then(res => {
                 this.props.loadSqlScripts(res)
@@ -106,7 +106,7 @@ const mapStateToProps = (state) => {
     scripts: state.scripts,
     grants: state.grants,
     rankCodes: state.rankCodes,
-    operationCodes: state.operationCodes
+    operations: state.operations
   }
 };
 const mapDispatchToProps = (dispatch) => {

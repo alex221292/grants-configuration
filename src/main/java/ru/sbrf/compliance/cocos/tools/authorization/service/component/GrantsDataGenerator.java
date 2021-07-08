@@ -2,6 +2,7 @@ package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 
 import org.springframework.stereotype.Component;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GetGrantsData;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.OperationDto;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.GrantDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.OperationDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.RankDAO;
@@ -38,9 +39,11 @@ public class GrantsDataGenerator {
       Map<String, Map<String, Object>> result = new HashMap<>();
       data.setGrants(result);
       List<Operation> operations = operationDAO.findAll().stream().sorted(Comparator.comparing(Operation::getCode)).collect(Collectors.toList());
-      data.setOperationCodes(operations.stream()
-        .map(Operation::getCode)
-        .sorted()
+      data.setOperations(operations.stream()
+        .map(o -> OperationDto.builder().enabled(o.isEnabled()).operationCode(o.getCode()).build())
+        .sorted(
+          Comparator.comparing((OperationDto::getOperationCode))
+        )
         .distinct()
         .collect(Collectors.toList()));
 

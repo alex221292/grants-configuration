@@ -19,7 +19,7 @@ export function updateDataBySql(query, sessionKey) {
   }).catch(e => console.log(e))
 }
 
-export function getGeneratedSqlScripts(grants, rankCodes, operationCodes) {
+export function getGeneratedSqlScripts(grants, rankCodes, operations) {
   return fetch(
     '/cib-grants/data/sql/generate', {
       method: 'POST',
@@ -30,7 +30,7 @@ export function getGeneratedSqlScripts(grants, rankCodes, operationCodes) {
         data: {
           grants: grants,
           rankCodes: rankCodes,
-          operationCodes: operationCodes
+          operations: operations
         }
       })
     }

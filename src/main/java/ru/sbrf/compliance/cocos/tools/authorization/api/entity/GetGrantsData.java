@@ -12,5 +12,5 @@ public class GetGrantsData {
 
   private Map<String, Map<String, Object>> grants;
   private List<String> rankCodes;
-  private List<String> operationCodes;
+  private List<OperationDto> operations;
 }

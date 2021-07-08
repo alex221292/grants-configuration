@@ -9,7 +9,7 @@ export default (state, action) => {
           ...state,
           grants: action.data.grants,
           rankCodes: action.data.rankCodes,
-          operationCodes: action.data.operationCodes
+          operations: action.data.operations
         }
       } else {
         return state;
