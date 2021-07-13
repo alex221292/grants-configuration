@@ -26,6 +26,18 @@ export default (state, action) => {
         ...state,
         scripts: action.scripts
       }
+    case TYPE_CODES.ADD_RANK:
+      let rankCodes = _.cloneDeep(state.rankCodes);
+      rankCodes.push(action.rankCode);
+      return {
+        ...state,
+        rankCodes
+      }
+    case TYPE_CODES.TOGGLE_POPUP:
+      return {
+        ...state,
+        showPopup: !state.showPopup
+      }
     default:
       return state;
   }

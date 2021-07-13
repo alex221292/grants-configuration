@@ -1,10 +1,9 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import styles from './styles.less';
-import cn from "classnames";
-import Cell from "../cell";
+import Cell from "../grant";
 
-class Row extends Component {
+class OperationRow extends Component {
 
   constructor(props) {
     super(props);
@@ -37,4 +36,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(Row);
+export default connect(mapStateToProps)(OperationRow);

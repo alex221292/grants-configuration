@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import styles from './styles.less';
-import cn from "classnames";
-import Row from "./components/row"
+import Row from "./components/operation-row"
+import {TYPE_CODES} from "../../const";
 
 class Table extends Component {
 
@@ -18,7 +18,7 @@ class Table extends Component {
         <table className={styles.table}>
           <thead>
           <tr>
-            <th/>
+            <th onClick={() => this.props.togglePopup()}/>
             {
               rankCodes.map(rank => {
                 return (
@@ -57,4 +57,10 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(Table);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    togglePopup: () => dispatch({type: TYPE_CODES.TOGGLE_POPUP})
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Table);

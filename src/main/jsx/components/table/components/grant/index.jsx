@@ -4,7 +4,7 @@ import styles from './styles.less';
 import cn from "classnames";
 import {TYPE_CODES} from "../../../../const";
 
-class Cell extends Component {
+class Grant extends Component {
 
   constructor(props) {
     super(props);
@@ -36,4 +36,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cell);
+export default connect(mapStateToProps, mapDispatchToProps)(Grant);

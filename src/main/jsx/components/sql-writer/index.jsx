@@ -10,7 +10,7 @@ class SqlWriter extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {query: ''}
   }
 
   render() {
@@ -31,6 +31,7 @@ class SqlWriter extends Component {
               }
             )
           }}
+          value={this.state.query}
         />
         <Button
           variant="outlined"
@@ -41,6 +42,9 @@ class SqlWriter extends Component {
               .then(res => {
                 alert(res.status);
                 if (res.status === 'SUCCESS') {
+                  this.setState(
+                    {query: ''}
+                  )
                   this.props.loadGrants(res);
                 }
               })
