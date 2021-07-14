@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import PopupWindow from "../popup-window";
-import {TYPE_CODES} from "../../../../const";
+import styles from './styles.less';
 
 class PopupWrapper extends Component {
 
@@ -12,10 +12,10 @@ class PopupWrapper extends Component {
 
   render() {
     return (
-      <div>
+      <div className={styles.wrapper} onClick={() => !this.props.showPopup && this.props.closeAction()}>
         {
           this.props.showPopup
-            ? <PopupWindow toggle={() => this.props.togglePopup} closeAction={this.props.closeAction} submitAction={this.props.submitAction}/>
+            ? <PopupWindow closeAction={this.props.closeAction} submitAction={this.props.submitAction}/>
             : null
         }
       </div>
@@ -30,10 +30,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    togglePopup: () => dispatch({type: TYPE_CODES.TOGGLE_POPUP})
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PopupWrapper)
+export default connect(mapStateToProps)(PopupWrapper)

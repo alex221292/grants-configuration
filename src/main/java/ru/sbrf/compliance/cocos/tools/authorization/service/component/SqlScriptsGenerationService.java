@@ -81,6 +81,9 @@ public class SqlScriptsGenerationService {
     grantsFromRequest.forEach((operationCode, grants) -> {
       Operation existingOperation = operationMap.get(operationCode);
       grants.forEach((rankCode, status) -> {
+        if (!rankMap.containsKey(rankCode)) {
+          return;
+        }
         List<Grant> existingGrants = grantDAO.findAllByOperationCodeAndRankCode(operationCode, rankCode);
         boolean isGrantAlreadyExists = existingGrants != null && !existingGrants.isEmpty();
         Rank existingRank = rankMap.get(rankCode);

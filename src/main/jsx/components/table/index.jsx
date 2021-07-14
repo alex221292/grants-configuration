@@ -4,6 +4,7 @@ import styles from './styles.less';
 import Row from "./components/operation-row"
 import {TYPE_CODES} from "../../const";
 import PopupWrapper from "../popup/components/popup-wrapper";
+import Rank from "./components/rank";
 
 class Table extends Component {
 
@@ -19,13 +20,13 @@ class Table extends Component {
         <table className={styles.table}>
           <thead>
           <tr>
-            <th onClick={() => this.props.togglePopup()}>
+            <th className={styles.flex}>
               <PopupWrapper closeAction={() => this.props.togglePopup()} submitAction={(rankCode) => this.props.addRank(rankCode)}/>
             </th>
             {
-              rankCodes.map(rank => {
+              rankCodes.map(rankCode => {
                 return (
-                  <th className={styles.header}>{rank}</th>
+                  <Rank rankCode={rankCode} deleteRank={(rankCode) => this.props.deleteRank(rankCode)}/>
                 )
               })
             }
@@ -63,6 +64,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addRank: (rankCode) => dispatch({type: TYPE_CODES.ADD_RANK, rankCode: rankCode}),
+    deleteRank: (rankCode) => dispatch({type: TYPE_CODES.DELETE_RANK, rankCode: rankCode}),
     togglePopup: () => dispatch({type: TYPE_CODES.TOGGLE_POPUP})
   };
 };

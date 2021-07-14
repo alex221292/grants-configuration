@@ -23,6 +23,7 @@ export default class PopupWindow extends Component {
             </label>
             <br/>
             <button type="button" onClick={() => {
+              console.log("TEST");
               this.props.submitAction(this.state.inputValue);
               this.props.closeAction();
             }
