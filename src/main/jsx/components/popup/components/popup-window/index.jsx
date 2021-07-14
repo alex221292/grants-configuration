@@ -1,9 +1,7 @@
 import React, {Component} from "react";
-import {connect} from "react-redux";
 import styles from './styles.less';
-import {TYPE_CODES} from "../../const";
 
-class Popup extends Component {
+export default class PopupWindow extends Component {
 
   constructor(props) {
     super(props);
@@ -14,7 +12,7 @@ class Popup extends Component {
     return (
       <div className={styles.modal}>
         <div className={styles.modal_content}>
-          <span className={styles.close} onClick={() => this.props.togglePopup()}>
+          <span className={styles.close} onClick={() => this.props.closeAction()}>
             &times;
           </span>
           <form>
@@ -25,8 +23,8 @@ class Popup extends Component {
             </label>
             <br/>
             <button type="button" onClick={() => {
-              this.props.addRank(this.state.inputValue);
-              this.props.togglePopup();
+              this.props.submitAction(this.state.inputValue);
+              this.props.closeAction();
             }
             }>
               Сохранить!
@@ -38,16 +36,3 @@ class Popup extends Component {
   }
 
 }
-
-const mapStateToProps = (state) => {
-  return {}
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addRank: (rankCode) => dispatch({type: TYPE_CODES.ADD_RANK, rankCode: rankCode}),
-    togglePopup: () => dispatch({type: TYPE_CODES.TOGGLE_POPUP})
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Popup)

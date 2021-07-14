@@ -4,7 +4,6 @@ import SqlWriter from "../sql-writer";
 import SqlReader from "../sql-reader";
 import Table from "../table";
 import {TYPE_CODES} from "../../const";
-import Popup from "../popup";
 
 class Main extends Component {
 
@@ -15,7 +14,6 @@ class Main extends Component {
   render() {
     return (
       <div>
-        {this.props.showPopup ? <Popup toggle={() => this.props.togglePopup} /> : null}
         <h1>CIB Security Matrix</h1>
         <SqlWriter/>
         <Table/>

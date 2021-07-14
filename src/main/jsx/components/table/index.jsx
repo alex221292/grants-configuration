@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import styles from './styles.less';
 import Row from "./components/operation-row"
 import {TYPE_CODES} from "../../const";
+import PopupWrapper from "../popup/components/popup-wrapper";
 
 class Table extends Component {
 
@@ -18,7 +19,9 @@ class Table extends Component {
         <table className={styles.table}>
           <thead>
           <tr>
-            <th onClick={() => this.props.togglePopup()}/>
+            <th onClick={() => this.props.togglePopup()}>
+              <PopupWrapper closeAction={() => this.props.togglePopup()} submitAction={(rankCode) => this.props.addRank(rankCode)}/>
+            </th>
             {
               rankCodes.map(rank => {
                 return (
@@ -59,6 +62,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    addRank: (rankCode) => dispatch({type: TYPE_CODES.ADD_RANK, rankCode: rankCode}),
     togglePopup: () => dispatch({type: TYPE_CODES.TOGGLE_POPUP})
   };
 };
