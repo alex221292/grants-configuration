@@ -45,9 +45,17 @@ export default (state, action) => {
       }
     }
     case TYPE_CODES.TOGGLE_POPUP: {
+      let showPopup = _.cloneDeep(state.showPopup);
+      if (showPopup[action.popupCode] === undefined) {
+        showPopup = {
+          ...showPopup,
+          [action.popupCode]: false
+        }
+      }
+      showPopup[action.popupCode] = !showPopup[action.popupCode]
       return {
         ...state,
-        showPopup: !state.showPopup
+        showPopup
       }
     }
     case TYPE_CODES.DELETE_RANK: {

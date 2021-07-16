@@ -40,12 +40,13 @@ class SqlWriter extends Component {
           onClick={() => {
             updateDataBySql(this.state.query, this.props.sessionKey)
               .then(res => {
-                alert(res.status);
                 if (res.status === 'SUCCESS') {
                   this.setState(
                     {query: ''}
                   )
                   this.props.loadGrants(res);
+                } else {
+                  alert(res.status);
                 }
               })
           }}

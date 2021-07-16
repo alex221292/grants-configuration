@@ -18,6 +18,7 @@ export default class CreateRankForm extends Component {
         <br/>
         <button type="button" onClick={() => {
           this.props.submitAction(this.state.inputValue);
+          this.props.closeAction();
         }
         }>
           Сохранить!

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import styles from './styles.less';
 import Cell from "../grant";
-import {TYPE_CODES} from "../../../../const";
+import {deleteOperation} from "../../../../actions";
 
 class OperationRow extends Component {
 
@@ -14,7 +14,7 @@ class OperationRow extends Component {
   render() {
     const {operation, rankCodes} = this.props;
     return (
-      <tr className={styles.row}>
+      <tr className={styles.row} key={operation.operationCode}>
         <td>
           {operation.operationCode}
           <span>
@@ -44,7 +44,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteOperation: (operationCode) => dispatch({type: TYPE_CODES.DELETE_OPERATION, operationCode: operationCode})
+    deleteOperation: (operationCode) => deleteOperation(dispatch, operationCode)
   };
 };
 

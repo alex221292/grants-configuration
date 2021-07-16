@@ -22,6 +22,7 @@ export default class CreateOperationForm extends Component {
         <br/>
         <button type="button" onClick={() => {
           this.props.submitAction(this.state.inputValue, this.state.enabled);
+          this.props.closeAction();
         }
         }>
           Сохранить!

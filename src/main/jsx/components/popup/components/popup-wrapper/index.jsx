@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PopupWindow from "../popup-window";
 import styles from './styles.less';
-import {TYPE_CODES} from "../../../../const";
+import {togglePopup} from "../../../../actions";
 
 class PopupWrapper extends Component {
 
@@ -11,14 +11,38 @@ class PopupWrapper extends Component {
     this.state = {}
   }
 
+  populatePropertiesToChild() {
+    const {popupCode} = this.props;
+    return React.Children.map(this.props.children, child => {
+      if (React.isValidElement(child)) {
+        return React.cloneElement(
+          child,
+          {
+            closeAction: () => this.props.togglePopup(popupCode)
+          }
+          );
+      }
+      return child;
+    });
+  }
+
+  renderPopup() {
+    const {popupCode, showPopup} = this.props;
+    if (showPopup[popupCode]) {
+      const child = this.populatePropertiesToChild();
+      return (
+        <PopupWindow closeAction={() => this.props.togglePopup(popupCode)} children={child}/>
+      )
+    }
+  }
+
   render() {
+    const {popupCode} = this.props;
     return (
-      <div className={styles.wrapper} onClick={() => !this.props.showPopup && this.props.togglePopup()}>
+      <div className={styles.wrapper} onClick={() => !this.props.showPopup[popupCode] && this.props.togglePopup(popupCode)}>
         {this.props.caption}
         {
-          this.props.showPopup
-            ? <PopupWindow closeAction={() => this.props.togglePopup()} children={this.props.children}/>
-            : null
+          this.renderPopup()
         }
       </div>
     )
@@ -34,7 +58,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    togglePopup: () => dispatch({type: TYPE_CODES.TOGGLE_POPUP})
+    togglePopup: (popupCode) => togglePopup(dispatch, popupCode)
   };
 };
 
