@@ -17,6 +17,13 @@ export default (state, action) => {
     }
     case TYPE_CODES.TOGGLE_GRANT: {
       let updatedGrants = _.cloneDeep(state.grants);
+      const operationGrants = updatedGrants[action.operationCode];
+      if (!operationGrants) {
+        updatedGrants = {
+          ...updatedGrants,
+          [action.operationCode]: {}
+        }
+      }
       updatedGrants[action.operationCode][action.rankCode] = !updatedGrants[action.operationCode][action.rankCode]
       return {
         ...state,
@@ -51,6 +58,24 @@ export default (state, action) => {
       return {
         ...state,
         rankCodes
+      }
+    }
+    case TYPE_CODES.ADD_OPERATION: {
+      let operations = _.cloneDeep(state.operations);
+      operations.push(action.operation)
+      return {
+        ...state,
+        operations
+      }
+    }
+    case TYPE_CODES.DELETE_OPERATION: {
+      let operations = _.remove(
+        state.operations,
+        (val) => val.operationCode !== action.operationCode
+      )
+      return {
+        ...state,
+        operations
       }
     }
     default:
