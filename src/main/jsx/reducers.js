@@ -21,10 +21,12 @@ export default (state, action) => {
       if (!operationGrants) {
         updatedGrants = {
           ...updatedGrants,
-          [action.operationCode]: {}
+          [action.operationCode]: {
+            enabled: false
+          }
         }
       }
-      updatedGrants[action.operationCode][action.rankCode] = !updatedGrants[action.operationCode][action.rankCode]
+      updatedGrants[action.operationCode][action.rankCode].enabled = !updatedGrants[action.operationCode][action.rankCode].enabled
       return {
         ...state,
         grants: updatedGrants

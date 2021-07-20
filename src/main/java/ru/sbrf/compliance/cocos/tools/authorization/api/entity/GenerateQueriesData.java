@@ -10,7 +10,7 @@ import java.util.Map;
 @Setter
 public class GenerateQueriesData {
 
-  private Map<String, Map<String, Boolean>> grants;
+  private Map<String, Map<String, GrantDto>> grants;
   private List<OperationDto> operations;
   private List<String> rankCodes;
 

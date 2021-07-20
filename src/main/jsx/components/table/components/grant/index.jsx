@@ -14,7 +14,7 @@ class Grant extends Component {
   render() {
     const {grants, operationCode, rankCode} = this.props;
     const operationGrants = grants[operationCode];
-    const isActive = operationGrants ? grants[operationCode][rankCode] : false;
+    const isActive = operationGrants ? grants[operationCode][rankCode].enabled : false;
     return (
       <td className={
         cn(styles.cell, {[styles.cell_active]: isActive === true})
