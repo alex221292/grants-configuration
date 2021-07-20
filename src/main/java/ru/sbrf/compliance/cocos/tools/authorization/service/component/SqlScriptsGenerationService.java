@@ -35,13 +35,13 @@ public class SqlScriptsGenerationService {
     " LEFT JOIN [authorization].[operations] o ON o.[code] = '%s'" +
     " WHERE r.[code] = '%s';";
   private static final String INSERT_INTO_ATTRIBUTES_QUERY = "INSERT INTO [authorization].[attributes] (grant_id, code, [value])\n" +
-    "SELECT g.grant_id, '%s' as code, v.code as [value]\n" +
-    "FROM [authorization].[grants] g\n" +
-    "       inner join [authorization].[operations] o on g.opr_id = o.opr_id\n" +
-    "       inner join [authorization].[ranks] r on g.rank_id = r.rank_id\n" +
-    "       cross join (select '%s' as code) v\n" +
-    "where o.code = '%s'\n" +
-    "  and r.code = '%s'";
+    "SELECT g.[grant_id], '%s' as code, v.[code] as [value]" +
+    " FROM [authorization].[grants] g" +
+    "       inner join [authorization].[operations] o on g.[opr_id] = o.[opr_id]" +
+    "       inner join [authorization].[ranks] r on g.[rank_id] = r.[rank_id]" +
+    "       cross join (select '%s' as [code]) v" +
+    " where o.[code] = '%s'" +
+    "  and r.[code] = '%s'";
 
   private final RankDAO rankDAO;
   private final OperationDAO operationDAO;
@@ -90,6 +90,7 @@ public class SqlScriptsGenerationService {
 
     Map<String, Map<String, GrantDto>> grantsFromRequest = data.getGrants();
     List<Grant> grantsToSave = new ArrayList<>();
+    List<Attribute> attributesToSave = new ArrayList<>();
     grantsFromRequest.forEach((operationCode, grants) -> {
       Operation existingOperation = operationMap.get(operationCode);
       grants.forEach((rankCode, grantDto) -> {
@@ -109,18 +110,26 @@ public class SqlScriptsGenerationService {
             grant.setGrantKey(grantKey);
             grant.setOperation(existingOperation);
             grant.setRank(existingRank);
+            if (grantDto.getAttributes() != null) {
+              attributesToSave.addAll(
+                grantDto.getAttributes().stream()
+                  .map(attributeDto -> {
+                    Attribute attribute = new Attribute();
+                    attribute.setGrant(grant);
+                    attribute.setCode(attributeDto.getCode());
+                    attribute.setValue(attributeDto.getValue());
+                    return attribute;
+                  }).collect(Collectors.toList())
+              )
+;            }
             grantsToSave.add(grant);
-          }
-        } else {
-          if (isGrantAlreadyExists) {
-            grant = existingGrants.get(0);
-            grantDAO.delete(grant);
           }
         }
       });
     });
 
     grantDAO.saveAll(grantsToSave);
+    attributeDAO.saveAll(attributesToSave);
   }
 
   private void fillOperations(Map<String, Operation> operationMap, List<OperationDto> operations) {

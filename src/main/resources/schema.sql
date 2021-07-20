@@ -27,3 +27,12 @@ CREATE TABLE [authorization].[attributes]
     [value]      NVARCHAR(128)       NOT NULL,
     PRIMARY KEY ([atr_id])
 );
+ALTER TABLE [authorization].[grants]
+    ADD FOREIGN KEY ([rank_id])
+        REFERENCES [authorization].[ranks] ([rank_id]);
+ALTER TABLE [authorization].[grants]
+    ADD FOREIGN KEY ([opr_id])
+        REFERENCES [authorization].[operations] ([opr_id]);
+ALTER TABLE [authorization].[attributes]
+    ADD FOREIGN KEY ([grant_id])
+        REFERENCES [authorization].[grants] ([grant_id]);

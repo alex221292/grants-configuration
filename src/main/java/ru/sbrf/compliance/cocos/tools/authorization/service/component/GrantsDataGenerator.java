@@ -66,7 +66,7 @@ public class GrantsDataGenerator {
           rankCode,
           GrantDto.builder()
             .enabled(grants.stream().anyMatch(g -> g.getRank().getCode().equals(rankCode) && g.getOperation().getCode().equals(operation.getCode())))
-            .attribute(getAttributeDtoByOperationAndRank(operation.getCode(), rankCode, attributes))
+            .attributes(getAttributeDtoByOperationAndRank(operation.getCode(), rankCode, attributes))
             .build()
         ));
         result.put(operation.getCode(), grantsMap);
@@ -78,14 +78,12 @@ public class GrantsDataGenerator {
     }
   }
 
-  private AttributeDto getAttributeDtoByOperationAndRank(String operationCode, String rankCode, List<Attribute> attributes) {
+  private List<AttributeDto> getAttributeDtoByOperationAndRank(String operationCode, String rankCode, List<Attribute> attributes) {
     return attributes.stream()
       .filter(a -> operationCode.equals(a.getGrant().getOperation().getCode()) && rankCode.equals(a.getGrant().getRank().getCode()))
-      .findFirst()
       .map(
         foundAttribute -> AttributeDto.builder().code(foundAttribute.getCode()).value(foundAttribute.getValue()).build()
-      )
-      .orElse(null);
+      ).collect(Collectors.toList());
   }
 
 }
