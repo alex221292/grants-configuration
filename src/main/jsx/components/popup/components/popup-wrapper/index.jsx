@@ -27,8 +27,8 @@ class PopupWrapper extends Component {
   }
 
   renderPopup() {
-    const {popupCode, showPopup} = this.props;
-    if (showPopup[popupCode]) {
+    const {popupCode, isActive} = this.props;
+    if (isActive) {
       const child = this.populatePropertiesToChild();
       return (
         <PopupWindow closeAction={() => this.props.togglePopup(popupCode)} children={child}/>
@@ -36,11 +36,25 @@ class PopupWrapper extends Component {
     }
   }
 
+  renderCaption() {
+    const {imgSrc, caption} = this.props;
+    if (imgSrc) {
+      return (
+        <img src={imgSrc} alt={"attributes"}/>
+      )
+    } else {
+      return caption;
+    }
+  }
+
   render() {
-    const {popupCode} = this.props;
+    console.log("TEST");
+    const {isActive, popupCode} = this.props;
     return (
-      <div className={styles.wrapper} onClick={() => !this.props.showPopup[popupCode] && this.props.togglePopup(popupCode)}>
-        {this.props.caption}
+      <div className={styles.wrapper} onClick={() => !isActive && this.props.togglePopup(popupCode)}>
+        {
+          this.renderCaption()
+        }
         {
           this.renderPopup()
         }
@@ -50,9 +64,9 @@ class PopupWrapper extends Component {
 
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    showPopup: state.showPopup
+    isActive: state.showPopup[ownProps.popupCode]
   }
 };
 

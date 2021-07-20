@@ -2,10 +2,10 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import styles from './styles.less';
 import cn from "classnames";
-import {TYPE_CODES} from "../../../../const";
 import PopupWrapper from "../../../popup/components/popup-wrapper";
 import EditAttributesForm from "../../../forms/components/edit-attributes";
 import {saveAttributes, toggleGrant} from "../../../../actions";
+import settingsIcon from "./images/settings.png"
 
 class Grant extends Component {
 
@@ -16,19 +16,21 @@ class Grant extends Component {
 
   render() {
     const {grants, operationCode, rankCode} = this.props;
-    const operationGrants = grants[operationCode];
-    const isActive = operationGrants ? grants[operationCode][rankCode].enabled : false;
+    const grant = grants[operationCode] && grants[operationCode][rankCode];
+    const isActive = grant ? grant.enabled : false;
     return (
       <td className={
         cn(styles.cell, {[styles.cell_active]: isActive === true})
-      } onClick={() => this.props.toggleGrant(operationCode, rankCode)}>
-        TOGGLE
+      }>
+        <span onClick={() => this.props.toggleGrant(operationCode, rankCode)}>TOGGLE</span>
         <PopupWrapper
-          caption={'▲'}
+          imgSrc={settingsIcon}
           popupCode={operationCode + rankCode}
         >
           <EditAttributesForm
             submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
+            operationCode={operationCode}
+            rankCode={rankCode}
           />
         </PopupWrapper>
       </td>

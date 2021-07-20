@@ -6,7 +6,7 @@ import {Provider} from "react-redux";
 import Main from './components/main/index';
 
 const initialState = {
-  showPopup: false
+  showPopup: {}
 };
 const store = createStore(
   reducer,

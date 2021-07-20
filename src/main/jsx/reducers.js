@@ -16,22 +16,33 @@ export default (state, action) => {
       }
     }
     case TYPE_CODES.TOGGLE_GRANT: {
-      let updatedGrants = _.cloneDeep(state.grants);
-      const operationGrants = updatedGrants[action.operationCode];
+      let grants = _.cloneDeep(state.grants);
+      let operationGrants = grants[action.operationCode];
       if (!operationGrants) {
-        updatedGrants = {
-          ...updatedGrants,
-          [action.operationCode]: {
+        operationGrants = {
+          [action.rankCode]: {
+            enabled: false
+          }
+        }
+      } else {
+        const grant = operationGrants[action.rankCode]
+        if (!grant) {
+          operationGrants = {
+            ...operationGrants,
             [action.rankCode]: {
               enabled: false
             }
           }
         }
       }
-      updatedGrants[action.operationCode][action.rankCode].enabled = !updatedGrants[action.operationCode][action.rankCode].enabled
+      grants = {
+        ...grants,
+        [action.operationCode]: operationGrants
+      }
+      grants[action.operationCode][action.rankCode].enabled = !grants[action.operationCode][action.rankCode].enabled
       return {
         ...state,
-        grants: updatedGrants
+        grants: grants
       }
     }
     case TYPE_CODES.LOAD_SQL_SCRIPTS: {
@@ -49,7 +60,9 @@ export default (state, action) => {
       }
     }
     case TYPE_CODES.TOGGLE_POPUP: {
-      let showPopup = _.cloneDeep(state.showPopup);
+      let showPopup = {
+        ...state.showPopup
+      }
       if (showPopup[action.popupCode] === undefined) {
         showPopup = {
           ...showPopup,
@@ -91,22 +104,33 @@ export default (state, action) => {
       }
     }
     case TYPE_CODES.SAVE_ATTRIBUTES: {
-      let updatedGrants = _.cloneDeep(state.grants);
-      const operationGrants = updatedGrants[action.operationCode];
+      let grants = _.cloneDeep(state.grants);
+      let operationGrants = grants[action.operationCode];
       if (!operationGrants) {
-        updatedGrants = {
-          ...updatedGrants,
-          [action.operationCode]: {
+        operationGrants = {
+          [action.rankCode]: {
+            enabled: false
+          }
+        }
+      } else {
+        const grant = operationGrants[action.rankCode]
+        if (!grant) {
+          operationGrants = {
+            ...operationGrants,
             [action.rankCode]: {
               enabled: false
             }
           }
         }
       }
-      updatedGrants[action.operationCode][action.rankCode].attributes = action.attributes;
+      grants = {
+        ...grants,
+        [action.operationCode]: operationGrants
+      }
+      grants[action.operationCode][action.rankCode].attributes = !grants[action.operationCode][action.rankCode].attributes
       return {
         ...state,
-        grants: updatedGrants
+        grants: grants
       }
     }
     default:

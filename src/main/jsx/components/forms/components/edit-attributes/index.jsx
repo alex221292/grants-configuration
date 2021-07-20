@@ -4,7 +4,9 @@ export default class EditAttributesForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      attributes: []
+    }
   }
 
   render() {
@@ -14,7 +16,7 @@ export default class EditAttributesForm extends Component {
         <h3>Edit Grant Attributes</h3>
         <h4>{operationCode}/{rankCode}</h4>
         <button type="button" onClick={() => {
-          this.props.submitAction(this.state.inputValue);
+          this.props.submitAction(operationCode, rankCode, this.state.attributes);
           this.props.closeAction();
         }
         }>
