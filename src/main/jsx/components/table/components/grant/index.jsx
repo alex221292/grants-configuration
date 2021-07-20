@@ -3,6 +3,9 @@ import {connect} from "react-redux";
 import styles from './styles.less';
 import cn from "classnames";
 import {TYPE_CODES} from "../../../../const";
+import PopupWrapper from "../../../popup/components/popup-wrapper";
+import EditAttributesForm from "../../../forms/components/edit-attributes";
+import {saveAttributes, toggleGrant} from "../../../../actions";
 
 class Grant extends Component {
 
@@ -19,6 +22,15 @@ class Grant extends Component {
       <td className={
         cn(styles.cell, {[styles.cell_active]: isActive === true})
       } onClick={() => this.props.toggleGrant(operationCode, rankCode)}>
+        TOGGLE
+        <PopupWrapper
+          caption={'▲'}
+          popupCode={operationCode + rankCode}
+        >
+          <EditAttributesForm
+            submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
+          />
+        </PopupWrapper>
       </td>
     )
   }
@@ -33,7 +45,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    toggleGrant: (operationCode, rankCode) => dispatch({type: TYPE_CODES.TOGGLE_GRANT, operationCode: operationCode, rankCode: rankCode})
+    toggleGrant: (operationCode, rankCode) => toggleGrant(dispatch, operationCode, rankCode),
+    saveAttributes: (operationCode, rankCode, attributes) => saveAttributes(dispatch, operationCode, rankCode, attributes)
   };
 };
 

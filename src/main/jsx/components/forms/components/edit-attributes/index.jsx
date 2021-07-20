@@ -1,20 +1,18 @@
 import React, {Component} from "react";
 
-export default class CreateRankForm extends Component {
+export default class EditAttributesForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {inputValue: ''}
+    this.state = {}
   }
 
   render() {
+    const {operationCode, rankCode} = this.props
     return (
       <form>
-        <h3>Create new Rank Code</h3>
-        <label>
-          Code:
-          <input type="text" name="name" onChange={(e) => this.setState({inputValue: e.target.value})}/>
-        </label>
+        <h3>Edit Grant Attributes</h3>
+        <h4>{operationCode}/{rankCode}</h4>
         <button type="button" onClick={() => {
           this.props.submitAction(this.state.inputValue);
           this.props.closeAction();

@@ -19,3 +19,11 @@ export const deleteOperation = (dispatch, operationCode) => {
 export const togglePopup = (dispatch, popupCode) => {
   dispatch({type: TYPE_CODES.TOGGLE_POPUP, popupCode: popupCode})
 }
+
+export const toggleGrant = (dispatch, operationCode, rankCode) => {
+  dispatch({type: TYPE_CODES.TOGGLE_GRANT, operationCode: operationCode, rankCode: rankCode})
+}
+
+export const saveAttributes = (dispatch, operationCode, rankCode, attributes) => {
+  dispatch({type: TYPE_CODES.SAVE_ATTRIBUTES, operationCode: operationCode, rankCode: rankCode, attributes: attributes})
+}

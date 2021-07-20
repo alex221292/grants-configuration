@@ -19,7 +19,6 @@ export default class CreateOperationForm extends Component {
           <input type="text" name="operationCode" onChange={(e) => this.setState({inputValue: e.target.value})}/>
           <input type="checkbox" name="enabled" onChange={(e) => this.setState({enabled: e.target.checked})}/>
         </label>
-        <br/>
         <button type="button" onClick={() => {
           this.props.submitAction(this.state.inputValue, this.state.enabled);
           this.props.closeAction();

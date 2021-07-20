@@ -34,14 +34,14 @@ public class SqlScriptsGenerationService {
     " FROM [authorization].[ranks] r" +
     " LEFT JOIN [authorization].[operations] o ON o.[code] = '%s'" +
     " WHERE r.[code] = '%s';";
-  private static final String INSERT_INTO_ATTRIBUTES_QUERY = "INSERT INTO [authorization].[attributes] (grant_id, code, [value])\n" +
+  private static final String INSERT_INTO_ATTRIBUTES_QUERY = "INSERT INTO [authorization].[attributes] ([grant_id], [code], [value])" +
     "SELECT g.[grant_id], '%s' as code, v.[code] as [value]" +
     " FROM [authorization].[grants] g" +
     "       inner join [authorization].[operations] o on g.[opr_id] = o.[opr_id]" +
     "       inner join [authorization].[ranks] r on g.[rank_id] = r.[rank_id]" +
     "       cross join (select '%s' as [code]) v" +
     " where o.[code] = '%s'" +
-    "  and r.[code] = '%s'";
+    "  and r.[code] = '%s';";
 
   private final RankDAO rankDAO;
   private final OperationDAO operationDAO;

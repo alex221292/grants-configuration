@@ -22,7 +22,9 @@ export default (state, action) => {
         updatedGrants = {
           ...updatedGrants,
           [action.operationCode]: {
-            enabled: false
+            [action.rankCode]: {
+              enabled: false
+            }
           }
         }
       }
@@ -86,6 +88,25 @@ export default (state, action) => {
       return {
         ...state,
         operations
+      }
+    }
+    case TYPE_CODES.SAVE_ATTRIBUTES: {
+      let updatedGrants = _.cloneDeep(state.grants);
+      const operationGrants = updatedGrants[action.operationCode];
+      if (!operationGrants) {
+        updatedGrants = {
+          ...updatedGrants,
+          [action.operationCode]: {
+            [action.rankCode]: {
+              enabled: false
+            }
+          }
+        }
+      }
+      updatedGrants[action.operationCode][action.rankCode].attributes = action.attributes;
+      return {
+        ...state,
+        grants: updatedGrants
       }
     }
     default:
