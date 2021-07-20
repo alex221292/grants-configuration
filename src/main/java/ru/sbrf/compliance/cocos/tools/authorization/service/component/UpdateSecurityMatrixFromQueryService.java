@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import ru.sbrf.compliance.cocos.tools.authorization.RollbackException;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
 import ru.sbrf.compliance.cocos.tools.authorization.api.request.ExecuteQueryRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetGrantsResponse;
@@ -37,8 +36,6 @@ public class UpdateSecurityMatrixFromQueryService {
       response.setData(generator.generate());
 
       transactionManager.rollback(status);
-      throw new RollbackException();
-    } catch (RollbackException e) {
       response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());

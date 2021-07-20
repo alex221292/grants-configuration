@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import ru.sbrf.compliance.cocos.tools.authorization.RollbackException;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GenerateQueriesData;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.OperationDto;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
@@ -60,8 +59,6 @@ public class SqlScriptsGenerationService {
       response.setScripts(generateQueries());
 
       transactionManager.rollback(status);
-      throw new RollbackException();
-    } catch (RollbackException e) {
       response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());
