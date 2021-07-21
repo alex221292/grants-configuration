@@ -45,12 +45,6 @@ export default (state, action) => {
         grants: grants
       }
     }
-    case TYPE_CODES.LOAD_SQL_SCRIPTS: {
-      return {
-        ...state,
-        scripts: action.scripts
-      }
-    }
     case TYPE_CODES.ADD_RANK: {
       let rankCodes = _.cloneDeep(state.rankCodes);
       rankCodes.push(action.rankCode);

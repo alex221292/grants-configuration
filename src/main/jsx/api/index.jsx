@@ -40,5 +40,8 @@ export function getGeneratedSqlScripts(grants, rankCodes, operations) {
     } else {
       return Promise.reject('failed to get generated sql scripts with status: ' + res.status);
     }
-  }).catch(e => console.log(e))
+  }).catch(e => {
+    console.log("ERROR1")
+    console.log(e)
+  })
 }

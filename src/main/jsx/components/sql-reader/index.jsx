@@ -1,10 +1,10 @@
 import React, {Component} from "react";
-import {TYPE_CODES} from "../../const";
 import {connect} from "react-redux";
 import {getGeneratedSqlScripts} from "../../api";
 import Loader from "react-loader-spinner";
 import Button from '@material-ui/core/Button';
 import styles from './styles.less';
+import errorImage from "./images/cancel.png";
 
 class SqlReader extends Component {
 
@@ -12,7 +12,8 @@ class SqlReader extends Component {
     super(props);
     this.state = {
       scriptsIsLoading: false,
-      hideScripts: false
+      error: false,
+      scripts: ""
     }
   }
 
@@ -25,19 +26,19 @@ class SqlReader extends Component {
   }
 
   renderSqlScripts() {
-    if (this.state.scriptsIsLoading === false) {
-      if (this.props.scripts && this.state.hideScripts === false) {
+    if (this.state.scriptsIsLoading === false && !this.state.error) {
+      if (this.state.scripts && this.state.scripts.length > 0) {
         return (
           <div className={styles.text}>
             {
-              this.props.scripts.map(script => {
+              this.state.scripts.map(script => {
                 return this.renderScript(script)
               })
             }
           </div>
         )
       }
-    } else {
+    } else if (this.state.scriptsIsLoading === true) {
       return (
         <Loader
           type="TailSpin"
@@ -45,6 +46,10 @@ class SqlReader extends Component {
           height={50}
           width={50}
         />
+      )
+    } else if (this.state.error) {
+      return (
+        <img src={errorImage} alt={"error"}/>
       )
     }
   }
@@ -56,33 +61,30 @@ class SqlReader extends Component {
           variant="outlined"
           color="primary"
           onClick={() => {
-            this.setState(
-              {
-                ...this.state,
-                hideScripts: !this.state.hideScripts
-              }
-            )
-          }}
-        >
-          Toggle visibility
-        </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => {
             getGeneratedSqlScripts(
               this.props.grants,
               this.props.rankCodes,
               this.props.operations
             )
               .then(res => {
-                this.props.loadSqlScripts(res)
-                this.setState(
-                  {
-                    ...this.state,
-                    scriptsIsLoading: false
-                  }
-                )
+                if (res && res.status === 'SUCCESS') {
+                  this.setState(
+                    {
+                      ...this.state,
+                      scriptsIsLoading: false,
+                      error: false,
+                      scripts: res.scripts
+                    }
+                  )
+                } else {
+                  this.setState(
+                    {
+                      ...this.state,
+                      scriptsIsLoading: false,
+                      error: true
+                    }
+                  )
+                }
               })
             this.setState(
               {
@@ -103,16 +105,10 @@ class SqlReader extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    scripts: state.scripts,
     grants: state.grants,
     rankCodes: state.rankCodes,
     operations: state.operations
   }
 };
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadSqlScripts: (res) => dispatch({type: TYPE_CODES.LOAD_SQL_SCRIPTS, scripts: res.scripts}),
-  };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SqlReader);
+export default connect(mapStateToProps)(SqlReader);
