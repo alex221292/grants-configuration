@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class GenerateQueriesData {
+public class GenerateQueriesRequestData {
 
   private Map<String, Map<String, GrantDto>> grants;
   private List<OperationDto> operations;

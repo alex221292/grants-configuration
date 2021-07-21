@@ -2,7 +2,7 @@ package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 
 import org.springframework.stereotype.Component;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.AttributeDto;
-import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GetGrantsData;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GetGrantsResponseData;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GrantDto;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.OperationDto;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.AttributeDAO;
@@ -37,10 +37,10 @@ public class GrantsDataGenerator {
     this.attributeDAO = attributeDAO;
   }
 
-  public GetGrantsData generate(){
+  public GetGrantsResponseData generate(){
     List<Rank> ranks = rankDAO.findAll();
     if (!ranks.isEmpty()) {
-      GetGrantsData data = new GetGrantsData();
+      GetGrantsResponseData data = new GetGrantsResponseData();
       data.setRankCodes(ranks.stream()
         .map(Rank::getCode)
         .sorted()

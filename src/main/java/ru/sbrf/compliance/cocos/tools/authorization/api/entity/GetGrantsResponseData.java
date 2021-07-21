@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class GetGrantsData {
+public class GetGrantsResponseData {
 
   private Map<String, Map<String, GrantDto>> grants;
   private List<String> rankCodes;

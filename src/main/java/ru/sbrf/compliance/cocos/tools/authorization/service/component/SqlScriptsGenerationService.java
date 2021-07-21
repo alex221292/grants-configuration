@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GenerateQueriesData;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GenerateQueriesRequestData;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GrantDto;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.OperationDto;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
@@ -35,11 +35,11 @@ public class SqlScriptsGenerationService {
     " LEFT JOIN [authorization].[operations] o ON o.[code] = '%s'" +
     " WHERE r.[code] = '%s';";
   private static final String INSERT_INTO_ATTRIBUTES_QUERY = "INSERT INTO [authorization].[attributes] ([grant_id], [code], [value])" +
-    "SELECT g.[grant_id], '%s' as code, v.[code] as [value]" +
+    "SELECT g.[grant_id], '%s' as code, v.[value]" +
     " FROM [authorization].[grants] g" +
     "       inner join [authorization].[operations] o on g.[opr_id] = o.[opr_id]" +
     "       inner join [authorization].[ranks] r on g.[rank_id] = r.[rank_id]" +
-    "       cross join (select '%s' as [code]) v" +
+    "       cross join (select '%s' as [value]) v" +
     " where o.[code] = '%s'" +
     "  and r.[code] = '%s';";
 
@@ -82,7 +82,7 @@ public class SqlScriptsGenerationService {
     return response;
   }
 
-  private void fillDatabase(GenerateQueriesData data) {
+  private void fillDatabase(GenerateQueriesRequestData data) {
     Map<String, Rank> rankMap = new HashMap<>();
     Map<String, Operation> operationMap = new HashMap<>();
     fillOperations(operationMap, data.getOperations());
