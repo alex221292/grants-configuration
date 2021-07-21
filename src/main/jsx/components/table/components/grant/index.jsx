@@ -14,19 +14,23 @@ class Grant extends Component {
     this.state = {}
   }
 
-  getIsActive(props) {
+  getGrant(props) {
     const {grants, operationCode, rankCode} = props;
-    const grant = grants[operationCode] && grants[operationCode][rankCode];
+    return grants[operationCode] && grants[operationCode][rankCode];
+  }
+
+  getIsActive(grant) {
     return grant ? grant.enabled : false;
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.getIsActive(nextProps) !== this.getIsActive(this.props)
+  shouldComponentUpdate(nextProps) {
+    return this.getIsActive(this.getGrant(nextProps)) !== this.getIsActive(this.getGrant(this.props))
   }
 
   render() {
     const {operationCode, rankCode} = this.props;
-    const isActive = this.getIsActive(this.props)
+    const grant = this.getGrant(this.props)
+    const isActive = this.getIsActive(grant)
     return (
       <td className={
         cn(styles.cell, {[styles.cell_active]: isActive === true})
@@ -40,6 +44,7 @@ class Grant extends Component {
             submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
             operationCode={operationCode}
             rankCode={rankCode}
+            attributes={grant.attributes}
           />
         </PopupWrapper>
       </td>

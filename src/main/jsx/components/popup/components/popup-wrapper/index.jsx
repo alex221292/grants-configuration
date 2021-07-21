@@ -56,7 +56,7 @@ export default class PopupWrapper extends Component {
   }
 
   render() {
-    const {isActive} = this.props;
+    const {isActive} = this.state;
     return (
       <div className={styles.wrapper} onClick={() => !isActive && this.togglePopup()}>
         {

@@ -88,12 +88,13 @@ export default (state, action) => {
       }
     }
     case TYPE_CODES.SAVE_ATTRIBUTES: {
-      let grants = _.cloneDeep(state.grants);
+      let grants = {
+        ...state.grants
+      };
       let operationGrants = grants[action.operationCode];
       if (!operationGrants) {
         operationGrants = {
           [action.rankCode]: {
-            enabled: false
           }
         }
       } else {
@@ -102,7 +103,6 @@ export default (state, action) => {
           operationGrants = {
             ...operationGrants,
             [action.rankCode]: {
-              enabled: false
             }
           }
         }
@@ -111,7 +111,7 @@ export default (state, action) => {
         ...grants,
         [action.operationCode]: operationGrants
       }
-      grants[action.operationCode][action.rankCode].attributes = !grants[action.operationCode][action.rankCode].attributes
+      grants[action.operationCode][action.rankCode].attributes = action.attributes
       return {
         ...state,
         grants: grants

@@ -11,10 +11,8 @@ export default class CreateRankForm extends Component {
     return (
       <form>
         <h3>Create new Rank Code</h3>
-        <label>
-          Code:
-          <input type="text" name="name" onChange={(e) => this.setState({inputValue: e.target.value})}/>
-        </label>
+        Code:
+        <input type="text" name="name" onChange={(e) => this.setState({inputValue: e.target.value})}/>
         <button type="button" onClick={() => {
           this.props.submitAction(this.state.inputValue);
           this.props.closeAction();
