@@ -1,24 +1,32 @@
 import React, {Component} from "react";
-import {connect} from "react-redux";
 import PopupWindow from "../popup-window";
 import styles from './styles.less';
-import {togglePopup} from "../../../../actions";
 
-class PopupWrapper extends Component {
+export default class PopupWrapper extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      isActive: false
+    }
+  }
+
+  togglePopup() {
+    this.setState(
+      {
+        ...this.state,
+        isActive: !this.state.isActive
+      }
+    )
   }
 
   populatePropertiesToChild() {
-    const {popupCode} = this.props;
     return React.Children.map(this.props.children, child => {
       if (React.isValidElement(child)) {
         return React.cloneElement(
           child,
           {
-            closeAction: () => this.props.togglePopup(popupCode)
+            closeAction: () => this.togglePopup()
           }
           );
       }
@@ -27,11 +35,11 @@ class PopupWrapper extends Component {
   }
 
   renderPopup() {
-    const {popupCode, isActive} = this.props;
+    const {isActive} = this.state;
     if (isActive) {
       const child = this.populatePropertiesToChild();
       return (
-        <PopupWindow closeAction={() => this.props.togglePopup(popupCode)} children={child}/>
+        <PopupWindow closeAction={() => this.togglePopup()} children={child}/>
       )
     }
   }
@@ -48,10 +56,9 @@ class PopupWrapper extends Component {
   }
 
   render() {
-    console.log("TEST");
-    const {isActive, popupCode} = this.props;
+    const {isActive} = this.props;
     return (
-      <div className={styles.wrapper} onClick={() => !isActive && this.props.togglePopup(popupCode)}>
+      <div className={styles.wrapper} onClick={() => !isActive && this.togglePopup()}>
         {
           this.renderCaption()
         }
@@ -63,17 +70,3 @@ class PopupWrapper extends Component {
   }
 
 }
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    isActive: state.showPopup[ownProps.popupCode]
-  }
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    togglePopup: (popupCode) => togglePopup(dispatch, popupCode)
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PopupWrapper)

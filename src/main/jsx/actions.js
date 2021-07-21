@@ -16,10 +16,6 @@ export const deleteOperation = (dispatch, operationCode) => {
   dispatch({type: TYPE_CODES.DELETE_OPERATION, operationCode: operationCode})
 }
 
-export const togglePopup = (dispatch, popupCode) => {
-  dispatch({type: TYPE_CODES.TOGGLE_POPUP, popupCode: popupCode})
-}
-
 export const toggleGrant = (dispatch, operationCode, rankCode) => {
   dispatch({type: TYPE_CODES.TOGGLE_GRANT, operationCode: operationCode, rankCode: rankCode})
 }

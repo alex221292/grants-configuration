@@ -14,10 +14,19 @@ class Grant extends Component {
     this.state = {}
   }
 
-  render() {
-    const {grants, operationCode, rankCode} = this.props;
+  getIsActive(props) {
+    const {grants, operationCode, rankCode} = props;
     const grant = grants[operationCode] && grants[operationCode][rankCode];
-    const isActive = grant ? grant.enabled : false;
+    return grant ? grant.enabled : false;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.getIsActive(nextProps) !== this.getIsActive(this.props)
+  }
+
+  render() {
+    const {operationCode, rankCode} = this.props;
+    const isActive = this.getIsActive(this.props)
     return (
       <td className={
         cn(styles.cell, {[styles.cell_active]: isActive === true})

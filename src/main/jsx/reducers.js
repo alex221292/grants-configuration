@@ -59,22 +59,6 @@ export default (state, action) => {
         rankCodes
       }
     }
-    case TYPE_CODES.TOGGLE_POPUP: {
-      let showPopup = {
-        ...state.showPopup
-      }
-      if (showPopup[action.popupCode] === undefined) {
-        showPopup = {
-          ...showPopup,
-          [action.popupCode]: false
-        }
-      }
-      showPopup[action.popupCode] = !showPopup[action.popupCode]
-      return {
-        ...state,
-        showPopup
-      }
-    }
     case TYPE_CODES.DELETE_RANK: {
       let rankCodes = _.remove(
         state.rankCodes,
