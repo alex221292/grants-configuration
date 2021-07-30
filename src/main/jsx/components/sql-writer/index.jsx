@@ -1,6 +1,7 @@
 import React, {Component} from "react";
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import MainButton from "../buttons/main-button";
+import SQLBox from "../sql-box";
 import {updateDataBySql} from "../../api";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {TYPE_CODES} from "../../const";
@@ -16,13 +17,7 @@ class SqlWriter extends Component {
   render() {
     return (
       <div>
-        <TextField
-          id="standard-multiline-flexible"
-          label="SQL"
-          style={{ margin: 8 }}
-          fullWidth
-          margin="normal"
-          multiline
+        <SQLBox
           onChange={(event) => {
             this.setState(
               {
@@ -33,10 +28,7 @@ class SqlWriter extends Component {
           }}
           value={this.state.query}
         />
-        <Button
-          variant="outlined"
-          color="primary"
-          startIcon={<CloudUploadIcon />}
+        <MainButton
           onClick={() => {
             updateDataBySql(this.state.query, this.props.sessionKey)
               .then(res => {
@@ -50,9 +42,8 @@ class SqlWriter extends Component {
                 }
               })
           }}
-        >
-          Execute
-        </Button>
+          caption={'EXECUTE'}
+        />
       </div>
     )
   }

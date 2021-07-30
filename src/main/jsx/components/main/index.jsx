@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import SqlWriter from "../sql-writer";
 import SqlReader from "../sql-reader";
 import Table from "../table";
+import Header from "../header";
+import styles from "./styles.less";
 
 class Main extends Component {
 
@@ -12,8 +14,8 @@ class Main extends Component {
 
   render() {
     return (
-      <div>
-        <h1>CIB Security Matrix</h1>
+      <div className={styles.main}>
+        <Header/>
         <SqlWriter/>
         <Table/>
         <SqlReader/>
