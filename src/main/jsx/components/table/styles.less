@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 54px;
-  width: 1110px;
+  width: 1200px;
   height: 900px;
   background: white;
   box-shadow: 0 0 15px rgba(33, 160, 56, 0.22);
@@ -43,9 +43,19 @@
   width: 100%;
   border: none;
   outline: none;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
 }
 
 :local(.flex) {
   display: flex;
   flex-direction: row;
+}
+
+:local(.axis) {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background-color: white;
 }

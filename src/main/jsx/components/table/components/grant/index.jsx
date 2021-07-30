@@ -4,8 +4,8 @@ import styles from './styles.less';
 import cn from "classnames";
 import PopupWrapper from "../../../popup/components/popup-wrapper";
 import EditAttributesForm from "../../../forms/components/edit-attributes";
+import AttributesSettingsButton from "../../../buttons/attributes-settings-button";
 import {saveAttributes, toggleGrant} from "../../../../actions";
-import settingsIcon from "./images/settings.png"
 
 class Grant extends Component {
 
@@ -35,17 +35,23 @@ class Grant extends Component {
       <td className={
         cn(styles.cell, {[styles.cell_active]: isActive === true})
       }>
-        <span onClick={() => this.props.toggleGrant(operationCode, rankCode)}>TOGGLE</span>
-        <PopupWrapper
-          imgSrc={settingsIcon}
-        >
-          <EditAttributesForm
-            submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
-            operationCode={operationCode}
-            rankCode={rankCode}
-            attributes={grant.attributes}
-          />
-        </PopupWrapper>
+        <div className={styles.flex_box}>
+          <div className={styles.half}>
+            <span onClick={() => this.props.toggleGrant(operationCode, rankCode)}>TOGGLE</span>
+          </div>
+          <div className={styles.half}>
+            <AttributesSettingsButton>
+              <PopupWrapper>
+                <EditAttributesForm
+                  submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
+                  operationCode={operationCode}
+                  rankCode={rankCode}
+                  attributes={grant.attributes}
+                />
+              </PopupWrapper>
+            </AttributesSettingsButton>
+          </div>
+        </div>
       </td>
     )
   }

@@ -38,7 +38,7 @@ class Table extends Component {
             <table className={styles.table}>
               <thead>
               <tr>
-                <th/>
+                <th className={styles.axis}/>
                 {
                   rankCodes.map(rankCode => {
                     return (
