@@ -5,9 +5,7 @@ import reducer from "./reducers";
 import {Provider} from "react-redux";
 import Main from './components/main/index';
 
-const initialState = {
-  showPopup: {}
-};
+const initialState = {};
 const store = createStore(
   reducer,
   initialState,

@@ -44,14 +44,12 @@ export default class PopupWrapper extends Component {
     }
   }
 
-  renderCaption() {
-    const {imgSrc, caption} = this.props;
+  renderIcon() {
+    const {imgSrc} = this.props;
     if (imgSrc) {
       return (
         <img src={imgSrc} alt={"attributes"}/>
       )
-    } else {
-      return caption;
     }
   }
 
@@ -60,7 +58,7 @@ export default class PopupWrapper extends Component {
     return (
       <div className={styles.wrapper} onClick={() => !isActive && this.togglePopup()}>
         {
-          this.renderCaption()
+          this.renderIcon()
         }
         {
           this.renderPopup()

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import styles from "./styles.less";
 
-export default class MainButton extends Component {
+export default class AdditionalButton extends Component {
 
   constructor(props) {
     super(props);
@@ -19,12 +19,13 @@ export default class MainButton extends Component {
   render() {
     const {caption, style} = this.props
     return (
-      <button className={styles.main_button}
+      <button className={styles.additional_button}
               onClick={this.props.onClick}
               style={
                 style
               }>
-        {this.renderIcon()}<span className={styles.main_button_text}>{caption}</span>
+        {this.props.children}
+        {this.renderIcon()}<span className={styles.additional_button_text}>{caption}</span>
       </button>
     )
   }

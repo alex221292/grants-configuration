@@ -29,6 +29,9 @@ class SqlWriter extends Component {
           value={this.state.query}
         />
         <MainButton
+          style={
+            {marginTop: 30 + 'px'}
+          }
           onClick={() => {
             updateDataBySql(this.state.query, this.props.sessionKey)
               .then(res => {

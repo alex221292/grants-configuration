@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import styles from './styles.less';
-import Cell from "../grant";
+import Grant from "../grant";
 import {deleteOperation} from "../../../../actions";
 
 class OperationRow extends Component {
@@ -15,16 +15,16 @@ class OperationRow extends Component {
     const {operation, rankCodes} = this.props;
     return (
       <tr className={styles.row} key={operation.operationCode}>
-        <td>
-          {operation.operationCode}
+        <th className={styles.operation}>
           <span>
             <button onClick={() => this.props.deleteOperation(operation.operationCode)}>X</button>
           </span>
-        </td>
+          {operation.operationCode}
+        </th>
         {
           rankCodes.map(rankCode => {
             return (
-              <Cell operationCode={operation.operationCode}
+              <Grant operationCode={operation.operationCode}
                     rankCode={rankCode}
               />
             )

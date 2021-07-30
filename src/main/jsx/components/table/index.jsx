@@ -7,6 +7,7 @@ import Rank from "./components/rank";
 import CreateRankForm from "../forms/components/create-rank";
 import CreateOperationForm from "../forms/components/create-operation";
 import {addOperation, addRank, deleteRank} from "../../actions";
+import AdditionalButton from "../buttons/additional-button";
 
 class Table extends Component {
 
@@ -19,46 +20,46 @@ class Table extends Component {
     const {rankCodes, operations} = this.props;
     if (rankCodes) {
       return (
-        <table className={styles.table}>
-          <thead>
-          <tr>
-            <th className={styles.flex}>
-              <div className={styles.flex}>
-                <PopupWrapper
-                  caption={'Create Rank'}
-                  popupCode={"addRank"}
-                >
-                  <CreateRankForm submitAction={(rankCode) => this.props.addRank(rankCode)}/>
-                </PopupWrapper>
-              </div>
-              <div className={styles.flex}>
-                <PopupWrapper
-                  caption={'Create Operation'}
-                  popupCode={"addOperation"}
-                >
-                  <CreateOperationForm submitAction={(operationCode, enabled) => this.props.addOperation(operationCode, enabled)}/>
-                </PopupWrapper>
-              </div>
-            </th>
-            {
-              rankCodes.map(rankCode => {
-                return (
-                  <Rank rankCode={rankCode} deleteRank={(rankCode) => this.props.deleteRank(rankCode)}/>
-                )
-              })
-            }
-          </tr>
-          </thead>
-          <tbody>
-          {
-            operations.map((operation) => {
-              return (
-                <OperationRow operation={operation}/>
-              )
-            })
-          }
-          </tbody>
-        </table>
+        <div className={styles.grants_box}>
+          <div className={styles.buttons_box}>
+            <AdditionalButton caption={'CREATE RANK'}>
+              <PopupWrapper>
+                <CreateRankForm submitAction={(rankCode) => this.props.addRank(rankCode)}/>
+              </PopupWrapper>
+            </AdditionalButton>
+            <AdditionalButton style={{marginLeft: 55 + 'px'}} caption={'CREATE OPERATION'}>
+              <PopupWrapper>
+                <CreateOperationForm
+                  submitAction={(operationCode, enabled) => this.props.addOperation(operationCode, enabled)}/>
+              </PopupWrapper>
+            </AdditionalButton>
+          </div>
+          <div className={styles.table_box}>
+            <table className={styles.table}>
+              <thead>
+              <tr>
+                <th/>
+                {
+                  rankCodes.map(rankCode => {
+                    return (
+                      <Rank rankCode={rankCode} deleteRank={(rankCode) => this.props.deleteRank(rankCode)}/>
+                    )
+                  })
+                }
+              </tr>
+              </thead>
+              <tbody>
+              {
+                operations.map((operation) => {
+                  return (
+                    <OperationRow operation={operation}/>
+                  )
+                })
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
       )
     } else {
       return (

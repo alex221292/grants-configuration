@@ -38,7 +38,6 @@ class Grant extends Component {
         <span onClick={() => this.props.toggleGrant(operationCode, rankCode)}>TOGGLE</span>
         <PopupWrapper
           imgSrc={settingsIcon}
-          popupCode={operationCode + rankCode}
         >
           <EditAttributesForm
             submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
