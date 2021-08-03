@@ -23,3 +23,7 @@ export const toggleGrant = (dispatch, operationCode, rankCode) => {
 export const saveAttributes = (dispatch, operationCode, rankCode, attributes) => {
   dispatch({type: TYPE_CODES.SAVE_ATTRIBUTES, operationCode: operationCode, rankCode: rankCode, attributes: attributes})
 }
+
+export const applyOperationCodeFilter = (dispatch, operationCode) => {
+  dispatch({type: TYPE_CODES.APPLY_OPERATION_CODE_FILTER, operationCode: operationCode})
+}

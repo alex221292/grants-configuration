@@ -8,17 +8,17 @@ import CreateRankForm from "../forms/components/create-rank";
 import CreateOperationForm from "../forms/components/create-operation";
 import {addOperation, addRank, deleteRank} from "../../actions";
 import AdditionalButton from "../buttons/additional-button";
+import OperationFilterForm from "./components/operation-filter-form";
 
 class Table extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
   }
 
   render() {
-    const {rankCodes, operations} = this.props;
-    if (rankCodes) {
+    const {rankCodes, operations, filteredOperationCode} = this.props;
+    if (rankCodes && operations) {
       return (
         <div className={styles.grants_box}>
           <div className={styles.buttons_box}>
@@ -38,7 +38,9 @@ class Table extends Component {
             <table className={styles.table}>
               <thead>
               <tr>
-                <th className={styles.axis}/>
+                <th className={styles.flex}>
+                  <OperationFilterForm/>
+                </th>
                 {
                   rankCodes.map(rankCode => {
                     return (
@@ -50,7 +52,11 @@ class Table extends Component {
               </thead>
               <tbody>
               {
-                operations.map((operation) => {
+                operations.filter((item) => {
+                  return filteredOperationCode === undefined
+                    || this.props.filteredOperationCode.length === 0
+                    || item.operationCode.toUpperCase().includes(this.props.filteredOperationCode.toUpperCase())
+                }).map((operation) => {
                   return (
                     <OperationRow operation={operation}/>
                   )
@@ -75,7 +81,8 @@ class Table extends Component {
 const mapStateToProps = (state) => {
   return {
     rankCodes: state.rankCodes,
-    operations: state.operations
+    operations: state.operations,
+    filteredOperationCode: state.filteredOperationCode
   }
 };
 

@@ -5,7 +5,9 @@ import cn from "classnames";
 import PopupWrapper from "../../../popup/components/popup-wrapper";
 import EditAttributesForm from "../../../forms/components/edit-attributes";
 import AttributesSettingsButton from "../../../buttons/attributes-settings-button";
+import ToggleGrantButton from "../../../buttons/toggle-grant-button";
 import {saveAttributes, toggleGrant} from "../../../../actions";
+import _ from "lodash"
 
 class Grant extends Component {
 
@@ -24,7 +26,7 @@ class Grant extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.getIsActive(this.getGrant(nextProps)) !== this.getIsActive(this.getGrant(this.props))
+    return !_.isEqual(this.getGrant(nextProps), this.getGrant(this.props))
   }
 
   render() {
@@ -36,8 +38,8 @@ class Grant extends Component {
         cn(styles.cell, {[styles.cell_active]: isActive === true})
       }>
         <div className={styles.flex_box}>
-          <div className={styles.half}>
-            <span onClick={() => this.props.toggleGrant(operationCode, rankCode)}>TOGGLE</span>
+          <div className={styles.cell_element}>
+            <ToggleGrantButton onClick={() => this.props.toggleGrant(operationCode, rankCode)}/>
           </div>
           <div className={styles.half}>
             <AttributesSettingsButton>
@@ -46,7 +48,7 @@ class Grant extends Component {
                   submitAction={(operationCode, rankCode, attributes) => this.props.saveAttributes(operationCode, rankCode, attributes)}
                   operationCode={operationCode}
                   rankCode={rankCode}
-                  attributes={grant.attributes}
+                  attributes={grant && grant.attributes}
                 />
               </PopupWrapper>
             </AttributesSettingsButton>

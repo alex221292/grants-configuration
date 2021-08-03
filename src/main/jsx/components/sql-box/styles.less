@@ -1,18 +1,16 @@
-:local(.sql_box) {
-  display: flex;
-  width: 1200px;
-  height: 166px;
-  margin-top: 35px;
-  box-shadow: 0 0 15px rgba(33, 160, 56, 0.22);
-  border-radius: 15px;
-}
-
 :local(.sql_box_text) {
   display: flex;
-  margin: 0;
   padding: 20px 30px 0;
-  width: 100%;
   border: none;
   outline: none;
   resize: none;
+  width: 1200px;
+  height: 166px;
+  margin: 35px 0;
+  box-shadow: 0 0 15px rgba(33, 160, 56, 0.22);
+  border-radius: 15px;
+
+  &:focus {
+    box-shadow: 0 0 15px rgba(33, 160, 56, 0.60);
+  }
 }

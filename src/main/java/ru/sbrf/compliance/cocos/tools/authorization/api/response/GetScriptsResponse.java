@@ -9,6 +9,6 @@ import java.util.List;
 @Setter
 public class GetScriptsResponse extends Response {
 
-  private List<String> scripts;
+  private String scripts;
 
 }

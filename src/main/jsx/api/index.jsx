@@ -1,4 +1,4 @@
-export function updateDataBySql(query, sessionKey) {
+export function updateDataBySql(query) {
   return fetch(
     '/cib-grants/data/sql/update', {
       method: 'POST',
@@ -6,8 +6,7 @@ export function updateDataBySql(query, sessionKey) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query: query,
-        sessionKey: sessionKey
+        query: query
       })
     }
   ).then(res => {

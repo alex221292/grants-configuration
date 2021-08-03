@@ -43,6 +43,8 @@ public class SqlScriptsGenerationService {
     " where o.[code] = '%s'" +
     "  and r.[code] = '%s';";
 
+  private static final String TEXTAREA_LINE_SEPARATOR = "\n";
+
   private final RankDAO rankDAO;
   private final OperationDAO operationDAO;
   private final GrantDAO grantDAO;
@@ -71,7 +73,7 @@ public class SqlScriptsGenerationService {
     TransactionStatus status = transactionManager.getTransaction(paramTransactionDefinition);
     try {
       fillDatabase(request.getData());
-      response.setScripts(generateQueries());
+      response.setScripts(String.join(TEXTAREA_LINE_SEPARATOR, generateQueries()));
 
       transactionManager.rollback(status);
       response.setStatus(ResponseCode.SUCCESS);

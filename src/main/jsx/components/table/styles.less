@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 54px;
-  width: 1200px;
+  width: 95%;
   height: 900px;
   background: white;
   box-shadow: 0 0 15px rgba(33, 160, 56, 0.22);
@@ -30,6 +30,12 @@
   position: sticky;
   top: 0;
   z-index: 1;
+
+  &:first-child {
+    left: 0;
+    z-index: 2;
+    background-color: white;
+  }
 }
 
 :local(.table_box tbody th) {
@@ -51,11 +57,4 @@
 :local(.flex) {
   display: flex;
   flex-direction: row;
-}
-
-:local(.axis) {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background-color: white;
 }

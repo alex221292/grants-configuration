@@ -111,6 +111,12 @@ export default (state, action) => {
         grants: grants
       }
     }
+    case TYPE_CODES.APPLY_OPERATION_CODE_FILTER: {
+      return {
+        ...state,
+        filteredOperationCode: action.operationCode
+      }
+    }
     default:
       return state;
   }

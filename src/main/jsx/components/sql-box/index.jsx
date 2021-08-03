@@ -9,9 +9,9 @@ export default class SQLBox extends Component {
 
   render() {
     return (
-      <div className={styles.sql_box}>
-        <textarea className={styles.sql_box_text} onChange={this.props.onChange} value={this.props.value}/>
-      </div>
+      <textarea readOnly={this.props.readOnly} rows={10000} className={styles.sql_box_text} onChange={this.props.onChange}>
+        {this.props.value}
+      </textarea>
     )
   }
 
