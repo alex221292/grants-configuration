@@ -1,28 +1,65 @@
 import React, {Component} from "react";
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import MainButton from "../buttons/main-button";
+import SQLBox from "../sql-box";
 import {updateDataBySql} from "../../api";
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {TYPE_CODES} from "../../const";
 import {connect} from "react-redux";
+import Loader from "react-loader-spinner";
+import styles from "./styles.less"
 
 class SqlWriter extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      query: '',
+      dataIsLoading: false
+    }
+  }
+
+  renderLoader() {
+    if (this.state.dataIsLoading) {
+      return (
+        <Loader
+          type="TailSpin"
+          color="#00BFFF"
+          height={50}
+          width={50}
+        />
+      )
+    }
+  }
+
+  executeButtonAction() {
+    updateDataBySql(this.state.query)
+      .then(res => {
+        if (res.status === 'SUCCESS') {
+          this.setState(
+            {
+              query: '',
+              dataIsLoading: false
+            }
+          )
+          this.props.loadGrants(res);
+        } else {
+          alert(res.status);
+          this.setState({
+            ...this.state,
+            dataIsLoading: false
+          })
+        }
+      })
+    this.setState({
+      ...this.state,
+      dataIsLoading: true
+    })
   }
 
   render() {
     return (
-      <div>
-        <TextField
-          id="standard-multiline-flexible"
-          label="SQL"
-          style={{ margin: 8 }}
-          fullWidth
-          margin="normal"
-          multiline
+      <div className={styles.sql_writer}>
+        <SQLBox
+          readOnly={false}
           onChange={(event) => {
             this.setState(
               {
@@ -31,33 +68,21 @@ class SqlWriter extends Component {
               }
             )
           }}
+          value={this.state.query}
         />
-        <Button
-          variant="outlined"
-          color="primary"
-          startIcon={<CloudUploadIcon />}
-          onClick={() => {
-            updateDataBySql(this.state.query, this.props.sessionKey)
-              .then(res => {
-                alert(res.status);
-                if (res.status === 'SUCCESS') {
-                  this.props.loadGrants(res);
-                }
-              })
-          }}
-        >
-          Execute
-        </Button>
+        <MainButton
+          onClick={() => {this.executeButtonAction()}}
+          caption={'EXECUTE'}
+        />
+        {this.renderLoader()}
       </div>
     )
   }
 
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = () => {
   return {
-    scripts: state.scripts,
-    sessionKey: state.sessionKey
   }
 };
 const mapDispatchToProps = (dispatch) => {

@@ -1,18 +1,22 @@
 package ru.sbrf.compliance.cocos.tools.authorization.service.component;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GenerateQueriesRequestData;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.GrantDto;
+import ru.sbrf.compliance.cocos.tools.authorization.api.entity.OperationDto;
 import ru.sbrf.compliance.cocos.tools.authorization.api.entity.ResponseCode;
+import ru.sbrf.compliance.cocos.tools.authorization.api.request.GenerateQueriesRequest;
 import ru.sbrf.compliance.cocos.tools.authorization.api.response.GetScriptsResponse;
+import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.AttributeDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.GrantDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.OperationDAO;
 import ru.sbrf.compliance.cocos.tools.authorization.domain.dao.RankDAO;
-import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Grant;
-import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Operation;
-import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.Rank;
+import ru.sbrf.compliance.cocos.tools.authorization.domain.entity.*;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,21 +34,48 @@ public class SqlScriptsGenerationService {
     " FROM [authorization].[ranks] r" +
     " LEFT JOIN [authorization].[operations] o ON o.[code] = '%s'" +
     " WHERE r.[code] = '%s';";
+  private static final String INSERT_INTO_ATTRIBUTES_QUERY = "INSERT INTO [authorization].[attributes] ([grant_id], [code], [value])" +
+    "SELECT g.[grant_id], '%s' as code, v.[value]" +
+    " FROM [authorization].[grants] g" +
+    "       inner join [authorization].[operations] o on g.[opr_id] = o.[opr_id]" +
+    "       inner join [authorization].[ranks] r on g.[rank_id] = r.[rank_id]" +
+    "       cross join (select '%s' as [value]) v" +
+    " where o.[code] = '%s'" +
+    "  and r.[code] = '%s';";
+
+  private static final String TEXTAREA_LINE_SEPARATOR = "\n";
 
   private final RankDAO rankDAO;
   private final OperationDAO operationDAO;
   private final GrantDAO grantDAO;
+  private final AttributeDAO attributeDAO;
 
-  public SqlScriptsGenerationService(RankDAO rankDAO, OperationDAO operationDAO, GrantDAO grantDAO) {
+  private final PlatformTransactionManager transactionManager;
+
+  public SqlScriptsGenerationService(
+    RankDAO rankDAO,
+    OperationDAO operationDAO,
+    GrantDAO grantDAO,
+    AttributeDAO attributeDAO,
+    PlatformTransactionManager transactionManager
+  ) {
     this.rankDAO = rankDAO;
     this.operationDAO = operationDAO;
     this.grantDAO = grantDAO;
+    this.attributeDAO = attributeDAO;
+    this.transactionManager = transactionManager;
   }
 
-  public GetScriptsResponse execute() {
+  public GetScriptsResponse execute(GenerateQueriesRequest request) {
     GetScriptsResponse response = new GetScriptsResponse();
+
+    DefaultTransactionDefinition paramTransactionDefinition = new DefaultTransactionDefinition();
+    TransactionStatus status = transactionManager.getTransaction(paramTransactionDefinition);
     try {
-      response.setScripts(generateQueries());
+      fillDatabase(request.getData());
+      response.setScripts(String.join(TEXTAREA_LINE_SEPARATOR, generateQueries()));
+
+      transactionManager.rollback(status);
       response.setStatus(ResponseCode.SUCCESS);
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -53,12 +84,80 @@ public class SqlScriptsGenerationService {
     return response;
   }
 
+  private void fillDatabase(GenerateQueriesRequestData data) {
+    Map<String, Rank> rankMap = new HashMap<>();
+    Map<String, Operation> operationMap = new HashMap<>();
+    fillOperations(operationMap, data.getOperations());
+    fillRanks(rankMap, data.getRankCodes());
+
+    Map<String, Map<String, GrantDto>> grantsFromRequest = data.getGrants();
+    List<Grant> grantsToSave = new ArrayList<>();
+    List<Attribute> attributesToSave = new ArrayList<>();
+    grantsFromRequest.forEach((operationCode, grants) -> {
+      Operation existingOperation = operationMap.get(operationCode);
+      grants.forEach((rankCode, grantDto) -> {
+        if (!rankMap.containsKey(rankCode)) {
+          return;
+        }
+        List<Grant> existingGrants = grantDAO.findAllByOperationCodeAndRankCode(operationCode, rankCode);
+        boolean isGrantAlreadyExists = existingGrants != null && !existingGrants.isEmpty();
+        Rank existingRank = rankMap.get(rankCode);
+        Grant grant;
+        if (grantDto.isEnabled()) {
+          if (!isGrantAlreadyExists) {
+            grant = new Grant();
+            GrantKey grantKey = new GrantKey();
+            grantKey.setRankId(existingRank.getId());
+            grantKey.setOperationId(existingOperation.getId());
+            grant.setGrantKey(grantKey);
+            grant.setOperation(existingOperation);
+            grant.setRank(existingRank);
+            if (grantDto.getAttributes() != null) {
+              attributesToSave.addAll(
+                grantDto.getAttributes().stream()
+                  .map(attributeDto -> {
+                    Attribute attribute = new Attribute();
+                    attribute.setGrant(grant);
+                    attribute.setCode(attributeDto.getCode());
+                    attribute.setValue(attributeDto.getValue());
+                    return attribute;
+                  }).collect(Collectors.toList())
+              )
+;            }
+            grantsToSave.add(grant);
+          }
+        }
+      });
+    });
+
+    grantDAO.saveAll(grantsToSave);
+    attributeDAO.saveAll(attributesToSave);
+  }
+
+  private void fillOperations(Map<String, Operation> operationMap, List<OperationDto> operations) {
+    operations.forEach(operationDto -> {
+      Operation operation = new Operation();
+      operation.setCode(operationDto.getOperationCode());
+      operation.setEnabled(operationDto.isEnabled());
+      operationMap.put(operationDto.getOperationCode(), operationDAO.save(operation));
+    });
+  }
+
+  private void fillRanks(Map<String, Rank> rankMap, List<String> rankCodes) {
+    rankCodes.forEach(rankCode -> {
+      Rank rank = new Rank();
+      rank.setCode(rankCode);
+      rankMap.put(rankCode, rankDAO.save(rank));
+    });
+  }
+
   private List<String> generateQueries() {
     List<String> scripts = new LinkedList<>();
     appendDeleteScripts(scripts);
     appendInsertOperationsScripts(scripts);
     appendInsertRanksScripts(scripts);
     appendInsertGrantsScripts(scripts);
+    appendInsertAttributesScripts(scripts);
     return scripts;
   }
 
@@ -118,5 +217,26 @@ public class SqlScriptsGenerationService {
     ));
   }
 
+  private void appendInsertAttributesScripts(List<String> scripts) {
+    scripts.add("/* 5. Attributes insert part */");
+    List<Attribute> attributes = attributeDAO.findAll()
+      .stream()
+      .sorted(
+        Comparator
+          .comparing(Attribute::getCode)
+          .thenComparing(attribute -> attribute.getGrant().getRank().getCode())
+          .thenComparing(attribute -> attribute.getGrant().getOperation().getCode())
+      )
+      .collect(Collectors.toList());
+    attributes.forEach(attribute -> scripts.add(
+      String.format(
+        INSERT_INTO_ATTRIBUTES_QUERY,
+        attribute.getCode(),
+        attribute.getValue(),
+        attribute.getGrant().getOperation().getCode(),
+        attribute.getGrant().getRank().getCode()
+      )
+    ));
+  }
 
 }

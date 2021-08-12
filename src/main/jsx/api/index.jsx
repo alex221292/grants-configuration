@@ -1,46 +1,4 @@
-export function readGrants(sessionKey) {
-  return fetch(
-    '/cib-grants/data/grants/read', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        sessionKey: sessionKey
-      })
-    }
-  ).then(res => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject('failed to read grants with status: ' + res.status);
-    }
-  }).catch(e => console.log(e))
-}
-
-export function toggleGrant(operationCode, rankCode, sessionKey) {
-  return fetch(
-    '/cib-grants/data/grant/toggle', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        operationCode: operationCode,
-        rankCode: rankCode,
-        sessionKey: sessionKey
-      })
-    }
-  ).then(res => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject('failed to toggle grant with status: ' + res.status);
-    }
-  }).catch(e => console.log(e))
-}
-
-export function updateDataBySql(query, sessionKey) {
+export function updateDataBySql(query) {
   return fetch(
     '/cib-grants/data/sql/update', {
       method: 'POST',
@@ -48,8 +6,7 @@ export function updateDataBySql(query, sessionKey) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query: query,
-        sessionKey: sessionKey
+        query: query
       })
     }
   ).then(res => {
@@ -61,14 +18,29 @@ export function updateDataBySql(query, sessionKey) {
   }).catch(e => console.log(e))
 }
 
-export function getGeneratedSqlScripts() {
+export function getGeneratedSqlScripts(grants, rankCodes, operations) {
   return fetch(
-    '/cib-grants/data/sql/generate'
+    '/cib-grants/data/sql/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: {
+          grants: grants,
+          rankCodes: rankCodes,
+          operations: operations
+        }
+      })
+    }
   ).then(res => {
     if (res.ok) {
       return res.json();
     } else {
       return Promise.reject('failed to get generated sql scripts with status: ' + res.status);
     }
-  }).catch(e => console.log(e))
+  }).catch(e => {
+    console.log("ERROR1")
+    console.log(e)
+  })
 }

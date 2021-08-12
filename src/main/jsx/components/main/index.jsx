@@ -1,8 +1,10 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import SecurityMatrix from "../security-matrix";
-import SqlReader from "../sql-reader";
 import SqlWriter from "../sql-writer";
+import SqlReader from "../sql-reader";
+import Table from "../table";
+import Header from "../header";
+import styles from "./styles.less";
 
 class Main extends Component {
 
@@ -12,20 +14,14 @@ class Main extends Component {
 
   render() {
     return (
-      <div>
-        <h1>CIB Security Matrix</h1>
-        <SqlReader/>
+      <div className={styles.main}>
+        <Header/>
         <SqlWriter/>
-        <SecurityMatrix/>
+        <Table/>
+        <SqlReader/>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    ...state
-  }
-};
-
-export default connect(mapStateToProps)(Main);
+export default connect()(Main);
